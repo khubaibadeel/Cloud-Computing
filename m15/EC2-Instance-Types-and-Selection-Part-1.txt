@@ -10,3 +10,7 @@
         2. 3 --> 3rd Generation.
         3. micro --> Micro Size.
 
+    # Size Progression (Small --> Large):
+        nano < micro < small < medium < large < xlarge < 2xlarge ...
+
+
