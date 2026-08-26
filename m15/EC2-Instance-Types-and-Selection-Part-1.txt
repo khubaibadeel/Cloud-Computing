@@ -33,3 +33,16 @@
         General Purpose instances are ideal when you need a balance of CPU, Memory, and Networking.
 
 
+    # Compute Optimized Instances (C Family):
+        "High CPU performance relative to Memory."
+
+        # Best For:
+            1. Batch Processing
+            2. Gaming Servers
+            3. Media Transcoding
+            4. Simulations
+
+        # Indicator:
+            - Your application's CPU is consistently near 100% under normal load.
+
+
