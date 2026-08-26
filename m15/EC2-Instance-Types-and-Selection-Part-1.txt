@@ -1,0 +1,12 @@
+
+# EC2 Instance Types and Selection Part I:
+    EC2 Instance Types are named using Family, Generation, and Size.
+
+    # Instance Type Naming Format:
+        [family][generation].[size]
+
+        Example --> t3.micro
+        1. t --> T Family.
+        2. 3 --> 3rd Generation.
+        3. micro --> Micro Size.
+
