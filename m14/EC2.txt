@@ -45,3 +45,4 @@
         5. Terminate --> Instance is Deleted.
         
         Remember! Your Credits will be still being consumed whether u have stopped the EC2 Server.
+
