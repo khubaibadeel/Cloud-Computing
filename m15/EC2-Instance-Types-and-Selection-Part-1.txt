@@ -14,3 +14,22 @@
         nano < micro < small < medium < large < xlarge < 2xlarge ...
 
 
+    # General Purpose Instances (M, T Families):
+        "Balanced: Compute, Memory, Networking."
+
+        # M Family:
+            - Steady, balanced workloads.
+            - Predictable performance for demanding workloads.
+
+        # T Family:
+            - Burstable performance for variable workloads.
+            - Includes Free Tier t2.micro.
+
+        # Best For:
+            1. Web Applications
+            2. Dev/Test Environments
+            3. Content Management Systems
+
+        General Purpose instances are ideal when you need a balance of CPU, Memory, and Networking.
+
+
