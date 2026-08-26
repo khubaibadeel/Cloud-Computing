@@ -26,4 +26,11 @@
         3. Monitoring, Logs, Alerts and Incident Runbooks
         4. Migration from Shared Hosting to AWS (Physical/Other Servers to AWS Servers)
         5. Documentation and training for client teams (Document what you created and train their staff to operate it)
+
+
+    To Target all of these things, You Must have your own Portfolio Projects.
+
+    # Some Portfolio Projects which can prove that u can Do the Work:
+        A good portfolio shows Screenshots, Architecture, Commands, Costs, and Lessons learned.
+
         
