@@ -33,4 +33,4 @@
     # Some Portfolio Projects which can prove that u can Do the Work:
         A good portfolio shows Screenshots, Architecture, Commands, Costs, and Lessons learned.
 
-        
+        1. Secure AWS Account Setup (MFA, IAM Admin user)
