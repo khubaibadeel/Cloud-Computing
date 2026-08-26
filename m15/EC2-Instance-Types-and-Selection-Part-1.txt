@@ -59,3 +59,17 @@
             - Your application constantly runs out of memory.
 
 
+    # Quick Comparison:
+        1. General Purpose (M, T Families)
+            - Key Strength --> Balanced Compute, Memory, and Networking.
+            - Best For --> Web Apps, Dev/Test, Content Management, Small to Medium Apps.
+
+        2. Compute Optimized (C Family)
+            - Key Strength --> CPU; High CPU performance relative to Memory.
+            - Best For --> Batch Processing, Gaming Servers, Media Transcoding, Simulations.
+
+        3. Memory Optimized (R, X Families)
+            - Key Strength --> RAM; Very high Memory relative to CPU.
+            - Best For --> Large Databases, Caching (Redis/Memcached), Big Data, Real-time Analytics.
+
+
