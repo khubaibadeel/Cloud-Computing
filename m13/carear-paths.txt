@@ -18,4 +18,4 @@
         2. EC2 Webs Servers Deployment and SSL Handovers
         3. S3 Static Website hosting and CloudFront setup
         4. Creating EBS Snapshots, Backup Schedule, and Doing Restore Tests
-        
+        5. Cost Cleanup: Unused EIPs, Volumes, and Snapshots
