@@ -25,3 +25,5 @@
         2. Design a VPC (Virtual Private Cloud) for small production apps
         3. Monitoring, Logs, Alerts and Incident Runbooks
         4. Migration from Shared Hosting to AWS (Physical/Other Servers to AWS Servers)
+        5. Documentation and training for client teams (Document what you created and train their staff to operate it)
+        
