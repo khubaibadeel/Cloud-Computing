@@ -2,4 +2,5 @@
 
 # Carear  Paths After AWS Foundation:
     1. Cloud Support/Help Desk
-    2. Junior/Senior Cloud Engineer
+    2. Junior/Senior Cloud Engineer --> in which u have a proper cloud provider and keep the applications of your company live using different cloud providers.
+    
