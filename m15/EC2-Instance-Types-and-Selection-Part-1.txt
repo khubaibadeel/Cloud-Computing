@@ -46,3 +46,16 @@
             - Your application's CPU is consistently near 100% under normal load.
 
 
+    # Memory Optimized Instances (R, X Families):
+        "Very high RAM relative to CPU."
+
+        # Best For:
+            1. Large Relational Databases
+            2. Redis / Memcached
+            3. Big Data Workloads
+            4. Real-time Analytics
+
+        # Indicator:
+            - Your application constantly runs out of memory.
+
+
