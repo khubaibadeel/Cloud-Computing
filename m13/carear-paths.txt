@@ -1,6 +1,12 @@
 
 
 # Carear  Paths After AWS Foundation:
+    U must have Basic to Intermediate Understanding of Cloud Computing to comply with these jobs.
+    
     1. Cloud Support/Help Desk
     2. Junior/Senior Cloud Engineer --> in which u have a proper cloud provider and keep the applications of your company live using different cloud providers.
+    3. Cloud Administrator/SysOps --> U create a Cloud Environment and Provide help to ur customers.
+    4. Associate Solutions Architect --> Very Advance Level Job --> After 7-10 yrs of experience --> Includes How to design an architecture on Cloud and how it adapts in coming days.
+    5. DevOps/Platform Engineer --> Automates application deployment, infrastructure setup, monitoring, and software delivery. Makes development and deployment faster, more reliable, and repeatable.
+    6. Cloud Security Analyst --> Protects cloud infrastructure, applications, users, and data from security threats. 
     
