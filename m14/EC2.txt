@@ -1,0 +1,47 @@
+
+# EC2:
+    EC2 stands for Elastic Compute Cloud.
+    "Its a Virtual Server running in AWS's data centers."
+
+    # Same as a Physical Computer:
+        - It has Processor, RAM, Storage, and Operating System.
+
+    # You Launch it, use it, pay for it, stop it.
+
+    # It gives many options such as:
+        - Attach SSD, HardDisk, Private/Public IP.
+
+    # The Car Rental Analogy:
+        1. You rent a car.
+        2. You can use it for a few days, then you have to return it.
+        3. Same is the case with EC2.
+
+    # Key Features of EC2:
+        1. Resizable Capacity --> You can attach more resources to it as well as more servers of the same type.
+        2. Multiple Instance Type --> You can have different types of servers optimized for different workloads.
+        3. Full Control --> You choose the OS, install Software, and configure Settings.
+        4. Pay for what you use --> You pay only for the resources you use per second/hour.
+
+    # Use Cases of EC2:
+        1. Web Hosting
+        2. Application Servers (Mobile/Web Apps Backend)
+        3. Development and Testing Environments
+        4. Batch Processing (In Professional Life, some tasks are collected in batches and then processed in EC2)
+        5. Custom Databases
+        6. Machine Learning and Data Analysis
+
+    # EC2 Integration with AWS:
+        1. EC2 + S3 = File Storage
+        2. EC2 + RDS = Managed Database
+        3. EC2 + VPC = Network and Security
+        4. EC2 + IAM = Access Control
+        5. EC2 + CloudWatch = Monitoring
+
+    # EC2 Instance Lifecycle:
+        1. Launch --> Create a new Instance.
+        2. Running --> Instance is Running.
+        3. Stop --> Instance is Stopped.
+        4. Start --> Instance is Restarted.
+        5. Terminate --> Instance is Deleted.
+        
+        Remember! Your Credits will be still being consumed whether u have stopped the EC2 Server.
