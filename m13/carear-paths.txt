@@ -19,3 +19,9 @@
         3. S3 Static Website hosting and CloudFront setup
         4. Creating EBS Snapshots, Backup Schedule, and Doing Restore Tests
         5. Cost Cleanup: Unused EIPs, Volumes, and Snapshots
+
+    # High-Value Retainers:
+        1. Monthly AWS Health Checks and Security Review
+        2. Design a VPC (Virtual Private Cloud) for small production apps
+        3. Monitoring, Logs, Alerts and Incident Runbooks
+        4. Migration from Shared Hosting to AWS (Physical/Other Servers to AWS Servers)
