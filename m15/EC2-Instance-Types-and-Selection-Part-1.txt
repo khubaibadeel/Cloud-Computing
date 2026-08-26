@@ -73,3 +73,6 @@
             - Best For --> Large Databases, Caching (Redis/Memcached), Big Data, Real-time Analytics.
 
 
+    # Lecture Summary:
+        "We discussed the most basic and most used EC2 Instances for balanced workloads, compute-optimised, and memory-optimised."
+
