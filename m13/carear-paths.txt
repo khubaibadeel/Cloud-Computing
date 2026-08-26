@@ -53,3 +53,7 @@
         5. Infrastructure as Code (Terraform or CloudFormation for repeatable builds) --> Should know how to create an Infrastructure by Coding, without going to the console using Terraform and CloudFormation.
         6. Operations (CloudWatch, Backups, Runbooks, Cost Controls) --> Should know how to deal with Logging, Error Finding, Debugging, and Incident Management.
 
+        # Tip: 
+            --> Cloud Carears Reward people who can Explain, Document, and Troubleshoot, not just click buttons in the Console.
+            
+        "AWS + Linux + Networking + Automations = Job-Ready Foundation."
