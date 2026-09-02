@@ -1,3 +1,160 @@
 
-# EC2 Instance Types and Selection Part 2:
-    
+
+
+
+# EC2 Instance Types and Selection Part II:
+    In this lecture, we continue EC2 Instance selection with Storage Optimized,
+    Accelerated Computing, and a practical framework for choosing the right family.
+
+
+    # Storage Optimized Instances (I, D, H Families):
+        "Very high disk throughput using local SSD or HDD."
+
+        # Best For:
+            1. OLTP Databases
+            2. NoSQL Databases
+               - Cassandra
+               - MongoDB
+            3. Data Warehousing
+            4. Hadoop
+            5. Elasticsearch
+
+        # Indicator:
+            - Disk I/O or IOPS is the bottleneck.
+
+        Storage Optimized instances are designed for workloads that require
+        very high read/write performance and high disk throughput.
+
+
+    # Accelerated Computing Instances (P, G Families):
+        "GPU-powered instances."
+
+        # Best For:
+            1. Machine Learning Training
+            2. Deep Learning
+            3. 3D Rendering
+            4. Video Encoding
+
+        # Not Needed For:
+            - Most standard workloads.
+
+        Accelerated Computing instances use hardware accelerators such as GPUs
+        to perform specialized compute-intensive tasks more efficiently.
+
+
+    # EC2 Instance Selection Framework:
+        # Step 1: Identify the Bottleneck
+            Ask:
+                - Is CPU the bottleneck?
+                - Is RAM the bottleneck?
+                - Is Disk / IOPS the bottleneck?
+                - Is the workload balanced?
+
+        # Step 2: Match to the Right Family
+            1. CPU Bottleneck
+                --> Compute Optimized (C Family)
+
+            2. RAM Bottleneck
+                --> Memory Optimized (R, X Families)
+
+            3. Disk / IOPS Bottleneck
+                --> Storage Optimized (I, D, H Families)
+
+            4. Balanced Workload
+                --> General Purpose (M, T Families)
+
+
+        # Step 3: Start Small and Right-Size
+            - Start with a smaller instance where practical.
+            - Use CloudWatch monitoring data.
+            - Observe CPU, Memory-related behavior, Disk I/O, and Network usage.
+            - Resize the instance based on actual workload requirements.
+
+        # Step 4: Check On-Demand Price Before Committing
+            - Review the On-Demand price of the selected instance.
+            - Compare cost with the performance actually required.
+            - Avoid choosing a larger or more expensive instance without evidence.
+
+        # Step 5: Consider Reserved Instances
+            - Consider Reserved Instances for long-term, steady workloads.
+            - They are more suitable when usage is predictable and continuous.
+
+
+    # CloudWatch Monitoring:
+        "Use data before making instance-sizing decisions."
+
+        # With Monitoring Data:
+            - Review utilization trends.
+            - Identify whether CPU, Network, or other resources are under pressure.
+            - Right-size the instance based on evidence.
+
+        # Without Monitoring Data:
+            - You are mostly guessing.
+            - Instance selection can easily become oversized or undersized.
+
+
+    # Real-World Example:
+        Consider an application with different workload components.
+
+        1. Web Servers
+            - Job --> Handle user requests and serve web pages.
+            - Suitable Family --> T3 / M5
+            - Category --> General Purpose
+
+        2. MySQL Database
+            - Job --> In-memory operations, caching, and multi-user access.
+            - Suitable Family --> R5
+            - Category --> Memory Optimized
+
+        3. Log Analytics
+            - Job --> Process large volumes of log data with high-throughput storage.
+            - Suitable Family --> I3
+            - Category --> Storage Optimized
+
+
+    # Complete Family Reference:
+        1. General Purpose (M, T Families)
+            - Category --> General
+            - Optimized For --> Balanced resources
+            - Best For --> Web Applications, Dev/Test
+
+        2. Compute Optimized (C Family)
+            - Category --> Compute
+            - Optimized For --> CPU
+            - Best For --> Batch Processing, Gaming
+
+        3. Memory Optimized (R, X Families)
+            - Category --> Memory
+            - Optimized For --> RAM
+            - Best For --> Databases, Caching
+
+        4. Storage Optimized (I, D, H Families)
+            - Category --> Storage
+            - Optimized For --> Disk I/O
+            - Best For --> OLTP, NoSQL
+
+        5. Accelerated Computing (P, G Families)
+            - Category --> Accelerated
+            - Optimized For --> GPU
+            - Best For --> Machine Learning, Rendering
+
+
+    # Quick Selection Rule:
+        1. CPU Problem
+            --> Choose C Family.
+
+        2. RAM Problem
+            --> Choose R or X Family.
+
+        3. Disk / IOPS Problem
+            --> Choose I, D, or H Family.
+
+        4. Balanced Workload
+            --> Choose M or T Family.
+
+        5. GPU / Specialized Processing Requirement
+            --> Choose P or G Family.
+
+
+    # Lecture Summary:
+        "We discussed Storage Optimized and Accelerated Computing EC2 families, then learned a practical selection framework: identify the bottleneck, match the workload to the right family, start small, use CloudWatch data, check On-Demand pricing, and consider Reserved Instances for steady workloads."
