@@ -1,2 +1,191 @@
 
 
+# Key Pairs and Instance Access:
+    A Key Pair is a secure way to prove your identity when connecting to an EC2 instance.
+
+    # What is a Key Pair?
+        A Key Pair contains two linked cryptographic keys:
+
+        1. Public Key
+            - Stored on the EC2 instance/server.
+
+        2. Private Key
+            - Stored safely on your own computer.
+
+        # Simple Analogy:
+            - Public Key --> Padlock on the server.
+            - Private Key --> The key you keep with you.
+
+        # Why Use Key Pairs?
+            - No password is required for Linux SSH login.
+            - The private key proves your identity.
+            - More secure than normal passwords because there is nothing simple to guess.
+
+
+    # Creating a Key Pair in AWS:
+        1. Open AWS Console.
+        2. Go to EC2.
+        3. Open Key Pairs.
+        4. Click "Create key pair".
+        5. Give it a clear name.
+
+        Example:
+            - my-web-server-key
+            - new-keypair-test
+
+        # Key Pair Type:
+            1. RSA
+                - Most compatible.
+
+            2. ED25519
+                - Modern key type.
+
+        # Private Key File Format:
+            1. .pem
+                - Used with OpenSSH.
+                - Common for Linux, Mac, and PowerShell.
+
+            2. .ppk
+                - Used with PuTTY on Windows.
+
+        Important:
+            - AWS lets you download the private key only once.
+            - If you lose it, AWS cannot recover the same private key for you.
+
+
+    # Storing the Private Key Safely:
+        - Keep it in a secure private folder.
+        - Do not place it in a public or shared folder.
+        - Never commit the private key to Git or GitHub.
+        - Keep an encrypted backup if required.
+
+        # Linux / Mac Permission:
+            chmod 400 your-key.pem
+
+        This restricts access to the key file and is commonly required by SSH.
+
+
+    # Connecting to Linux Using SSH:
+        # Basic Command:
+            ssh -i /path/to/key.pem ec2-user@PUBLIC-IP
+
+        # Default Usernames:
+            - Amazon Linux --> ec2-user
+            - Ubuntu --> ubuntu
+
+        # First Connection:
+            - SSH may ask whether you trust the server fingerprint.
+            - Type:
+                yes
+
+        Example:
+            ssh -i newkp.pem ec2-user@13.48.195.144
+
+
+    # Connecting from Windows Using PuTTY:
+        1. Install PuTTY.
+        2. Open PuTTYgen if key conversion is needed.
+        3. Convert .pem to .ppk when required.
+        4. Open PuTTY.
+        5. Enter the EC2 Public IP or Public DNS.
+        6. Go to:
+            Connection > SSH > Auth > Credentials
+        7. Browse and select the .ppk private key.
+        8. Click Open.
+
+        # Login Username:
+            - Amazon Linux --> ec2-user
+            - Ubuntu --> ubuntu
+
+
+    # Using PuTTYgen:
+        PuTTYgen can:
+            - Generate a new key pair.
+            - Load an existing private key.
+            - Save a public key.
+            - Save a private key in .ppk format.
+
+        Common process:
+            1. Open PuTTYgen.
+            2. Load the existing key if needed.
+            3. Save the private key as .ppk.
+            4. Use the .ppk file in PuTTY.
+
+
+    # Connecting to Windows EC2:
+        Windows EC2 instances normally use Remote Desktop Protocol (RDP).
+
+        # Steps:
+            1. Open the EC2 instance details.
+            2. Get the instance Public IP or Public DNS.
+            3. Retrieve the Windows Administrator password from AWS.
+            4. Upload or provide the private key associated with the instance.
+            5. Click "Decrypt password".
+            6. Open Remote Desktop Connection.
+            7. Enter:
+                - Computer --> Public IP or DNS
+                - Username --> Administrator
+            8. Connect using the decrypted password.
+
+        # Important:
+            - The private key is required to decrypt the initial Windows Administrator password.
+
+
+    # Elastic IP Address:
+        A normal EC2 public IP can change after the instance is stopped and started.
+
+        # Elastic IP:
+            - A static public IPv4 address.
+            - It can stay associated with the same EC2 instance.
+            - Useful when you need a fixed public IP.
+
+        # Without Elastic IP:
+            - Instance restarts or stop/start cycles can result in a new public IP.
+
+        # With Elastic IP:
+            - The public IP remains fixed while properly associated.
+
+        # How to Allocate:
+            EC2 > Elastic IPs > Allocate Elastic IP address > Associate to instance
+
+        # Cost:
+            - AWS public IPv4 pricing can apply.
+            - Always check the current AWS pricing before keeping an Elastic IP.
+
+
+    # Quick Summary:
+        1. Key Pair
+            --> Public Key + Private Key.
+
+        2. Public Key
+            --> Stored on the EC2 instance.
+
+        3. Private Key
+            --> Kept securely on your computer.
+
+        4. .pem
+            --> Common with OpenSSH, Linux, Mac, and PowerShell.
+
+        5. .ppk
+            --> Common with PuTTY on Windows.
+
+        6. Amazon Linux Username
+            --> ec2-user
+
+        7. Ubuntu Username
+            --> ubuntu
+
+        8. Linux Connection
+            --> SSH using the private key.
+
+        9. Windows Connection
+            --> RDP using Administrator credentials.
+
+        10. Elastic IP
+            --> Static public IP for an EC2 instance.
+
+
+    # Lecture Summary:
+        "Key pairs securely prove your identity when connecting to EC2. Keep the private key safe,
+        use SSH for Linux instances, use RDP for Windows instances, and use an Elastic IP when
+        a fixed public address is required."
