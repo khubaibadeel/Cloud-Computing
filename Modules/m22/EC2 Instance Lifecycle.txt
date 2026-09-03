@@ -1,2 +1,179 @@
 
 
+# EC2 Instance Lifecycle:
+    The EC2 Instance Lifecycle describes the different states an EC2 instance can move through,
+    such as Pending, Running, Stopped, and Terminated.
+
+
+    # Main EC2 Instance States:
+        1. Pending
+            - AWS is preparing and provisioning the instance.
+            - The instance is not ready to use yet.
+
+        2. Running
+            - The instance is active.
+            - Compute usage is billed while it is running.
+
+        3. Stopping
+            - The instance is in the process of stopping.
+
+        4. Stopped
+            - Compute is paused.
+            - Compute billing stops.
+            - EBS storage can still be billed.
+            - The instance can be started again.
+
+        5. Shutting Down
+            - The instance is in the process of being terminated.
+
+        6. Terminated
+            - The instance is permanently deleted.
+            - It cannot be started again.
+
+
+    # Stopping an EC2 Instance:
+        When you stop an instance:
+
+        - Compute billing stops.
+        - EBS volumes remain attached.
+        - EBS storage charges can continue.
+        - Data on EBS volumes is preserved.
+        - The private IP normally stays the same.
+        - The public IPv4 address may change after a stop/start cycle.
+        - An Elastic IP can remain fixed when properly associated.
+
+        # Simple Idea:
+            Stop = Turn the server off temporarily.
+
+        You can start the instance again later.
+
+
+    # Rebooting an EC2 Instance:
+        Reboot is similar to restarting a normal computer.
+
+        - The operating system restarts.
+        - The instance remains the same EC2 instance.
+        - It is useful when applying updates or fixing temporary issues.
+
+        # Simple Idea:
+            Reboot = Restart the server.
+
+
+    # Stop vs. Hibernate:
+        # Stop:
+            - RAM contents are cleared.
+            - The operating system boots fresh when started again.
+            - Similar to turning a laptop completely off.
+
+        # Hibernate:
+            - RAM contents are saved to the EBS root volume.
+            - The instance resumes from where it was left.
+            - Similar to closing a laptop lid and resuming later.
+
+        # Hibernate Requirements:
+            - Hibernation must be enabled for the instance.
+            - The EBS root volume must have enough space to save RAM.
+
+
+    # Enabling Hibernation:
+        During EC2 instance launch:
+
+            1. Open Advanced Details.
+            2. Find Stop - Hibernate behavior.
+            3. Choose Enable.
+
+        Hibernation should be configured before you need to use it.
+
+
+    # Terminating an EC2 Instance:
+        "Termination is permanent and cannot be undone."
+
+        When an instance is terminated:
+
+        - The EC2 instance is permanently deleted.
+        - The root EBS volume is normally deleted by default.
+        - Additional EBS volumes may be preserved depending on their settings.
+        - Instance Store data is lost permanently.
+
+        # Root EBS Volume:
+            - Delete on termination = ON by default for many root volumes.
+            - This setting can be changed if the root volume must be preserved.
+
+        # Additional EBS Volumes:
+            - Often kept unless configured to delete on termination.
+
+        # Instance Store:
+            - Ephemeral storage.
+            - Data is lost when the instance is terminated.
+
+
+    # Before Terminating:
+        1. Create an AMI if you may need to recreate the server.
+        2. Back up important data.
+        3. Snapshot important EBS volumes.
+        4. Save configuration files.
+        5. Check whether any attached storage must be preserved.
+
+
+    # Termination Protection:
+        Enable Termination Protection for important production instances.
+
+        # Purpose:
+            - Helps prevent accidental termination.
+            - The protection must be disabled before the protected instance can be terminated.
+
+
+    # Basic AWS Console Actions:
+        To manage an instance:
+
+            EC2 > Instances > Select Instance > Instance State
+
+        Common actions include:
+            - Stop Instance
+            - Start Instance
+            - Reboot Instance
+            - Hibernate Instance
+            - Terminate Instance
+
+
+    # Quick Comparison:
+        1. Reboot
+            - Restart operating system.
+            - Instance remains active.
+            - Data remains.
+
+        2. Stop
+            - Compute pauses.
+            - RAM is cleared.
+            - EBS data remains.
+            - Can be started again.
+
+        3. Hibernate
+            - Compute pauses.
+            - RAM is saved to EBS.
+            - Resumes from previous state.
+
+        4. Terminate
+            - Permanent deletion.
+            - Cannot be restarted.
+            - Root EBS is commonly deleted by default.
+
+
+    # Quick Lifecycle Flow:
+        Pending
+            --> Running
+            --> Stopping
+            --> Stopped
+            --> Running again
+
+        OR
+
+        Running
+            --> Shutting Down
+            --> Terminated
+
+
+    # Lecture Summary:
+        "Use Reboot for a restart, Stop when you want to pause the instance and use it again,
+        Hibernate when you want to preserve the RAM state, and Terminate only when the instance
+        is no longer needed because termination is permanent."
