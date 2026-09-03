@@ -1,0 +1,167 @@
+# Security Groups and Network Access Part I:
+    A Firewall is a security system that controls which network traffic is allowed or blocked.
+
+    # Inbound and Outbound Rules:
+        - Inbound Rules --> Control traffic coming INTO your EC2 instance.
+        - Outbound Rules --> Control traffic going OUT of your EC2 instance.
+
+    # Why Use Inbound and Outbound Rules?
+        - To protect the EC2 instance from unwanted access.
+        - To allow only the network traffic your application actually needs.
+        - To control who can connect to the instance and where the instance can connect.
+
+
+    # Inbound Rules - The Three Parts:
+        Every inbound rule mainly contains:
+
+        1. Protocol
+            - Type of traffic.
+            - Common examples:
+                - TCP
+                - UDP
+                - ICMP
+
+        2. Port
+            - The specific "door" used by the traffic.
+
+            Common Ports:
+                - 80   --> HTTP
+                - 443  --> HTTPS
+                - 22   --> SSH
+                - 3389 --> RDP
+
+        3. Source
+            - Defines where the incoming traffic is allowed to come from.
+            - It can be:
+                - A specific IP address
+                - An IP range in CIDR format
+                - Another Security Group
+
+        # Default:
+            - All inbound traffic is BLOCKED unless an inbound rule allows it.
+
+
+    # Common Inbound Rule Examples:
+        1. Web Server:
+            - Protocol --> TCP
+            - Port --> 80
+            - Source --> 0.0.0.0/0
+
+        2. Secure Web:
+            - Protocol --> TCP
+            - Port --> 443
+            - Source --> 0.0.0.0/0
+
+        3. SSH for Linux Administration:
+            - Protocol --> TCP
+            - Port --> 22
+            - Source --> My IP only
+
+            Important:
+                - Avoid using 0.0.0.0/0 for SSH unless it is absolutely necessary.
+                - My IP is safer because only your public IP can connect.
+
+
+    # Outbound Rules:
+        "Control traffic going OUT of your EC2 instance."
+
+        # Default:
+            - New Security Groups normally allow all outbound traffic to all destinations.
+
+        Example:
+            - Type --> All Traffic
+            - Destination --> 0.0.0.0/0
+
+
+    # Security Group:
+        A Security Group acts as a virtual firewall for EC2 resources.
+
+        It controls:
+            1. Incoming traffic using Inbound Rules.
+            2. Outgoing traffic using Outbound Rules.
+
+
+    # Creating a Security Group in AWS:
+        1. Open AWS Console.
+        2. Search for "Security Groups".
+        3. Open EC2 Security Groups.
+        4. Click "Create security group".
+
+        # Basic Details:
+            Example:
+                - Security Group Name --> SSH-Inbound-SG
+                - Description --> Allows SSH access to developers
+                - VPC --> Select the required VPC
+
+        Note:
+            - The Security Group name cannot be edited after creation.
+
+
+    # Adding an SSH Inbound Rule:
+        Example:
+            - Type --> SSH
+            - Protocol --> TCP
+            - Port --> 22
+            - Source --> Choose the required source
+
+        Source Options:
+            - My IP --> Recommended when only you need SSH access.
+            - Custom IP/CIDR --> Use when a known network needs access.
+            - 0.0.0.0/0 --> Allows SSH access from anywhere on the Internet.
+
+        Warning:
+            - 0.0.0.0/0 on SSH is a security risk.
+            - Prefer a known IP address whenever possible.
+
+
+    # Tags:
+        Tags help organize and identify AWS resources.
+
+        Example:
+            - Key --> env
+            - Value --> dev
+
+
+    # After Creating the Security Group:
+        Check:
+            1. Security Group Name
+            2. Security Group ID
+            3. VPC
+            4. Inbound Rules
+            5. Outbound Rules
+            6. Tags
+
+
+    # Quick Summary:
+        1. Firewall
+            --> Controls allowed and blocked network traffic.
+
+        2. Inbound Rule
+            --> Controls traffic entering the instance.
+
+        3. Outbound Rule
+            --> Controls traffic leaving the instance.
+
+        4. Inbound Default
+            --> Blocked unless a rule allows it.
+
+        5. Outbound Default
+            --> Allowed to all destinations by default.
+
+        6. HTTP
+            --> TCP Port 80
+
+        7. HTTPS
+            --> TCP Port 443
+
+        8. SSH
+            --> TCP Port 22
+
+        9. RDP
+            --> TCP Port 3389
+
+
+    # Lecture Summary:
+        "Security Groups work like virtual firewalls. Inbound rules control incoming traffic,
+        outbound rules control outgoing traffic, and only the required ports and trusted
+        sources should be allowed."
