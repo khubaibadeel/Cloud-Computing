@@ -1,0 +1,161 @@
+# EC2 Pricing Models Part II:
+    This lecture focuses on Savings Plans and practical ways to reduce EC2 cost.
+
+
+    # Savings Plans:
+        "Commit to a fixed hourly spend for 1 or 3 years."
+
+        # Key Points:
+            - Can provide large discounts.
+            - More flexible than traditional Reserved Instances.
+            - Savings apply based on your committed hourly spend.
+
+        # Commitment:
+            - 1 year or 3 years.
+
+        # Discount:
+            - Up to around 72% depending on the plan.
+
+
+    # Savings Plans vs. Reserved Instances:
+        Reserved Instances:
+            - Usually linked more closely to specific instance choices.
+            - Good for stable and predictable workloads.
+
+        Savings Plans:
+            - Based on committed hourly spend.
+            - More flexible across eligible compute usage.
+            - Better when workloads may change over time.
+
+
+    # Two Types of Savings Plans:
+        1. Compute Savings Plans
+            - Most flexible option.
+            - Can apply to:
+                - EC2
+                - Fargate
+                - Lambda
+            - Can work across different regions, instance families, and sizes.
+            - Discount --> Up to around 66%.
+
+        2. EC2 Instance Savings Plans
+            - Less flexible than Compute Savings Plans.
+            - Usually tied to:
+                - One region
+                - One instance family
+            - Instance size and OS can still be flexible.
+            - Discount --> Up to around 72%.
+
+
+    # Combining Pricing Models:
+        Real systems often use more than one pricing model.
+
+        1. Web Servers Running 24/7
+            --> Reserved Instances
+
+        2. Interruptible Batch Jobs
+            --> Spot Instances
+
+        3. Dev/Test During Business Hours
+            --> On-Demand
+            --> Stop instances when not needed
+
+        4. Workloads That May Change Over Time
+            --> Compute Savings Plan
+
+
+    # Cost Comparison Example:
+        Example: m5.large in US East.
+
+        1. On-Demand
+            - Highest baseline cost.
+
+        2. Reserved 1-Year
+            - Lower cost.
+            - Around 41% savings in the example.
+
+        3. Reserved 3-Year
+            - Even lower cost.
+            - Around 63% savings in the example.
+
+        4. Spot
+            - Lowest cost in the example.
+            - Around 69% savings.
+            - Comes with interruption risk.
+
+        Note:
+            - Actual AWS prices can change.
+            - Always check current pricing before making a decision.
+
+
+    # Cost Optimization Strategies:
+        # 1. Right-Size Before Committing:
+            - Monitor usage first.
+            - Choose the correct instance size.
+            - Then commit to Reserved Instances or Savings Plans.
+
+        # 2. Use AWS Cost Explorer:
+            - Review usage history.
+            - Use AWS recommendations.
+            - Find opportunities to right-size or save money.
+
+        # 3. Stop Unused Instances:
+            - Dev/Test servers do not always need to run 24/7.
+            - Stop them at night or when not in use.
+            - This can reduce cost significantly.
+
+        # 4. Use Auto Scaling + Spot:
+            - Use Auto Scaling for changing demand.
+            - Add Spot Instances for fault-tolerant workloads.
+            - Helps reduce cost while still meeting capacity needs.
+
+        # 5. Review Pricing Regularly:
+            - AWS adds new services and pricing options.
+            - Review your pricing strategy regularly.
+            - Update your setup when better options become available.
+
+
+    # Complete Pricing Model Reference:
+        1. On-Demand
+            - Discount --> Baseline
+            - Commitment --> None
+            - Interruptible --> No
+            - Best For --> Dev/Test, unpredictable workloads
+
+        2. Reserved
+            - Discount --> Up to around 72%
+            - Commitment --> 1 or 3 years
+            - Interruptible --> No
+            - Best For --> Stable production workloads
+
+        3. Spot
+            - Discount --> Up to around 90%
+            - Commitment --> None
+            - Interruptible --> Yes
+            - Best For --> Batch, fault-tolerant workloads
+
+        4. Savings Plans
+            - Discount --> Up to around 72%
+            - Commitment --> 1 or 3 years
+            - Interruptible --> No
+            - Best For --> Stable or evolving workloads
+
+
+    # Simple Selection Rule:
+        1. New or unpredictable workload
+            --> On-Demand
+
+        2. Stable long-term workload
+            --> Reserved Instances
+
+        3. Interruptible workload
+            --> Spot Instances
+
+        4. Long-term workload that may change instance type or service
+            --> Savings Plans
+
+
+    # Lecture Summary:
+        "Savings Plans give long-term discounts with more flexibility than traditional reservations.
+        The best AWS cost strategy is usually to combine On-Demand, Reserved, Spot, and Savings Plans
+        based on workload behavior."
