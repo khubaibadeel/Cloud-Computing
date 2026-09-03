@@ -1,0 +1,135 @@
+
+
+# EC2 Pricing Models Part I:
+    EC2 pricing models help you control cost based on how long and how predictably you use instances.
+
+    # Why Pricing Models Matter:
+        - EC2 is charged based on usage.
+        - The right pricing model can save a lot of money.
+        - The wrong choice can cause unnecessary cost.
+
+
+    # On-Demand Instances:
+        "Pay only for what you use, with no long-term commitment."
+
+        # Key Points:
+            - Pay per second or per hour.
+            - No contract or commitment.
+            - Highest flexibility.
+
+        # Analogy:
+            - Like taking a taxi.
+            - Pay for the ride only when you need it.
+
+        # Best For:
+            1. Dev/Test environments
+            2. New projects
+            3. Unpredictable workloads
+            4. Workloads that cannot be interrupted
+
+
+    # Reserved Instances:
+        "Commit for a longer period and get a lower price."
+
+        # Savings:
+            - Up to around 72% compared with On-Demand.
+
+        # Commitment:
+            - 1 year or 3 years.
+
+        # Analogy:
+            - Like a gym membership.
+            - Commit for longer to save money.
+
+        # Payment Options:
+            1. All Upfront
+                - Pay everything at the start.
+                - Usually gives the highest discount.
+
+            2. Partial Upfront
+                - Pay some amount at the start.
+                - Pay the rest over time.
+
+            3. No Upfront
+                - No large payment at the start.
+                - Pay over the reservation period.
+
+        # Best For:
+            - Stable workloads running regularly for a long time.
+
+
+    # Standard vs. Convertible Reserved Instances:
+        1. Standard Reserved Instance
+            - Less flexible.
+            - Usually gives a bigger discount.
+            - Best when your instance needs will not change much.
+
+        2. Convertible Reserved Instance
+            - More flexible.
+            - Can change instance family, type, or other settings.
+            - Usually gives a smaller discount than Standard RI.
+
+        # Best For:
+            - Production workloads running continuously for a year or more.
+
+
+    # Spot Instances:
+        "Use spare AWS capacity at a very low price."
+
+        # Savings:
+            - Up to around 90% compared with On-Demand.
+
+        # Main Risk:
+            - AWS can interrupt the instance.
+            - You may receive only a short warning before termination.
+
+        # Analogy:
+            - Like a cheap standby airline seat.
+            - Low cost, but your seat can be taken back.
+
+        # Best For:
+            1. Batch jobs
+            2. Big data processing
+            3. Fault-tolerant workloads
+            4. Workloads that can be restarted
+
+        # Not Best For:
+            1. Databases that must stay available
+            2. Critical production systems
+            3. Workloads that cannot be interrupted
+
+
+    # Quick Comparison:
+        1. On-Demand
+            - Savings --> Baseline price
+            - Flexibility --> High
+            - Risk --> Very low
+            - Best For --> Dev/Test, new projects, unpredictable workloads
+
+        2. Reserved
+            - Savings --> Up to around 72%
+            - Flexibility --> Low
+            - Risk --> Commitment risk
+            - Best For --> Stable, long-running production workloads
+
+        3. Spot
+            - Savings --> Up to around 90%
+            - Flexibility --> Medium
+            - Risk --> Interruption
+            - Best For --> Batch and fault-tolerant workloads
+
+
+    # Simple Selection Rule:
+        1. If usage is new or unpredictable
+            --> Start with On-Demand.
+
+        2. If usage becomes stable and predictable
+            --> Move to Reserved Instances.
+
+        3. If the workload can be interrupted
+            --> Use Spot Instances to reduce cost.
+
+
+    # Lecture Summary:
+        "Start with On-Demand for flexibility, use Reserved Instances for predictable long-term workloads,
+        and use Spot Instances for low-cost workloads that can handle interruptions."
