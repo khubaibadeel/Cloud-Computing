@@ -53,7 +53,6 @@
 
         1. Cost Effective
             - Linux itself is free and open-source.
-            - No Windows Server license is required for Linux.
 
         2. Stable
             - Linux servers can run for long periods without rebooting.
@@ -64,9 +63,6 @@
         4. Strong Ecosystem
             - Many web servers, databases, DevOps tools, and container technologies
               are designed to work very well on Linux.
-
-        # Simple Idea:
-            Linux gives cloud systems lower cost, good stability, and strong control.
 
 
     # Linux Distributions:
@@ -82,28 +78,9 @@
 
         # Common Linux Distributions:
             1. Amazon Linux 2023
-                - Developed and maintained by AWS.
-                - Optimized for EC2.
-                - Secure and stable.
-                - Integrates well with AWS services.
-                - Common choice for AWS EC2 learning.
-
             2. Ubuntu
-                - User-friendly.
-                - Large community.
-                - Excellent documentation.
-                - Common for servers, applications, and containers.
-
             3. RHEL / CentOS / Rocky Linux
-                - Common in enterprise environments.
-                - RHEL provides commercial support.
-                - Rocky Linux and similar distributions are popular alternatives.
-                - Designed for stability and long-term use.
-
             4. Debian
-                - Known for reliability and stability.
-                - Ubuntu is based on Debian.
-                - Good choice for servers and critical systems.
 
 
     # Terminal and Bash Shell:
@@ -215,20 +192,3 @@
         6. Bash
             --> Common Linux shell.
 
-        7. /
-            --> Root of the Linux file system.
-
-        8. /home
-            --> User home directories.
-
-        9. /etc
-            --> Configuration files.
-
-        10. /var/log
-            --> System and application logs.
-
-
-    # Lecture Summary:
-        "Linux is an open-source operating system widely used in servers and cloud computing.
-        It is commonly managed through the terminal and Bash shell, and its file system
-        starts from the root directory (/)."
