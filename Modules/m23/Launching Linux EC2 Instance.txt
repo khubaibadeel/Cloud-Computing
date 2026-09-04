@@ -1,2 +1,160 @@
 
 
+# Launching Linux EC2 Instance:
+    This lecture shows the basic steps to launch a Linux EC2 instance from the AWS Console.
+
+
+    # Step 1: Open EC2 Instances:
+        1. Sign in to the AWS Console.
+        2. Open EC2.
+        3. Go to Instances.
+        4. Click "Launch instances".
+
+
+    # Step 2: Name the Instance:
+        - Enter a clear name for the instance.
+
+        Example:
+            - My-First-Instance
+
+
+    # Step 3: Choose an AMI:
+        AMI = Amazon Machine Image.
+
+        It contains the operating system and basic software used to create the instance.
+
+        Example:
+            - Amazon Linux 2023
+
+        Other common choices:
+            - Ubuntu
+            - Windows
+            - Red Hat
+            - SUSE Linux
+            - Debian
+
+
+    # Step 4: Choose the Instance Type:
+        - Select the required EC2 instance size.
+
+        Example:
+            - t3.micro
+
+        The instance type defines:
+            - CPU
+            - Memory
+            - Network capability
+
+
+    # Step 5: Select or Create a Key Pair:
+        A key pair is used to securely connect to the Linux instance.
+
+        You can:
+            1. Select an existing key pair.
+            2. Create a new key pair.
+
+        Example:
+            - my-first-keypair
+
+        # Key Pair Type:
+            - RSA
+            - ED25519
+
+        # Private Key Format:
+            - .pem --> OpenSSH
+            - .ppk --> PuTTY
+
+        Important:
+            - Store the private key safely.
+            - You need it later to connect to the instance.
+
+
+    # Step 6: Configure Network Settings:
+        Check:
+            - VPC
+            - Subnet
+            - Auto-assign Public IP
+            - Security Group
+
+        # Public IP:
+            - Enable Auto-assign Public IP if you want to connect from the Internet.
+
+
+    # Step 7: Configure Security Group:
+        You can:
+            1. Create a new Security Group.
+            2. Select an existing Security Group.
+
+        For SSH:
+            - Protocol --> TCP
+            - Port --> 22
+
+        Recommended:
+            - Allow SSH only from your own IP whenever possible.
+
+        Avoid:
+            - Opening SSH to 0.0.0.0/0 unless necessary.
+
+
+    # Step 8: Configure Storage:
+        Example:
+            - Root Volume --> 8 GiB
+            - Volume Type --> gp3
+
+        You can also:
+            - Increase the volume size.
+            - Add another EBS volume if required.
+
+
+    # Step 9: Review the Summary:
+        Before launching, check:
+            - Number of instances
+            - AMI
+            - Instance type
+            - Security Group
+            - Storage
+            - Key pair
+
+
+    # Step 10: Launch the Instance:
+        - Click "Launch instance".
+        - AWS starts creating the EC2 instance.
+
+        After successful launch:
+            - Open the Instances page.
+            - Wait until Instance State = Running.
+            - Wait for Status Checks to become healthy.
+
+
+    # Instance Details to Check:
+        After launch, note:
+
+        1. Instance ID
+        2. Instance State
+        3. Instance Type
+        4. Public IPv4 Address
+        5. Private IPv4 Address
+        6. Public DNS
+        7. Availability Zone
+        8. Security Group
+
+
+    # Quick Launch Flow:
+        EC2
+            --> Instances
+            --> Launch Instances
+            --> Name Instance
+            --> Choose Linux AMI
+            --> Choose Instance Type
+            --> Select/Create Key Pair
+            --> Configure Network
+            --> Select Security Group
+            --> Configure Storage
+            --> Review
+            --> Launch
+
+
+    # Lecture Summary:
+        "To launch a Linux EC2 instance, choose an AMI, instance type, key pair,
+        network settings, Security Group, and storage. Review the configuration,
+        launch the instance, and confirm that it reaches the Running state."
