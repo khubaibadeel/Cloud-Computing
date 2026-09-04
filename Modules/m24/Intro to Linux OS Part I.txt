@@ -1,0 +1,232 @@
+# Introduction to Linux Operating System Part I:
+    This lecture introduces operating systems, Linux, Linux distributions,
+    the terminal and Bash shell, and the basic Linux file system.
+
+
+    # What is an Operating System?
+        An Operating System (OS) is the software layer between computer hardware
+        and the applications you use.
+
+        # Main Job of an OS:
+            - Manages hardware resources.
+            - Provides services to applications.
+            - Controls CPU, memory, storage, network, and devices.
+
+
+    # Examples of Operating Systems:
+        1. Linux
+            - Very common on servers and cloud systems.
+            - Lightweight and efficient.
+            - Open-source and highly customizable.
+            - Commonly managed using the command line.
+
+        2. Windows
+            - Common on desktop and laptop computers.
+            - Uses a graphical user interface (GUI).
+            - Developed by Microsoft.
+            - Popular for everyday applications and games.
+
+        3. macOS
+            - Developed by Apple.
+            - Common in creative work such as design and video.
+            - Unix-based.
+            - Known for stability and security.
+
+
+    # What is Linux?
+        Linux is a powerful, open-source operating system.
+
+        # Key Points:
+            - Created in 1991 by Linus Torvalds.
+            - Free to use, modify, and distribute.
+            - Source code is publicly available.
+            - Used on servers, cloud platforms, Android devices,
+              embedded systems, and supercomputers.
+
+        Linux is one of the most important operating systems in cloud computing.
+
+
+    # Why Cloud Uses Linux:
+        Linux is widely used in cloud environments because it is:
+
+        1. Cost Effective
+            - Linux itself is free and open-source.
+            - No Windows Server license is required for Linux.
+
+        2. Stable
+            - Linux servers can run for long periods without rebooting.
+
+        3. Easy to Control
+            - Powerful command-line tools allow automation and remote management.
+
+        4. Strong Ecosystem
+            - Many web servers, databases, DevOps tools, and container technologies
+              are designed to work very well on Linux.
+
+        # Simple Idea:
+            Linux gives cloud systems lower cost, good stability, and strong control.
+
+
+    # Linux Distributions:
+        A Linux distribution (distro) is a version of Linux packaged with
+        different tools, software, and support.
+
+        All distributions use the Linux kernel but may differ in:
+            - Tools
+            - Package managers
+            - Default software
+            - Support
+
+
+        # Common Linux Distributions:
+            1. Amazon Linux 2023
+                - Developed and maintained by AWS.
+                - Optimized for EC2.
+                - Secure and stable.
+                - Integrates well with AWS services.
+                - Common choice for AWS EC2 learning.
+
+            2. Ubuntu
+                - User-friendly.
+                - Large community.
+                - Excellent documentation.
+                - Common for servers, applications, and containers.
+
+            3. RHEL / CentOS / Rocky Linux
+                - Common in enterprise environments.
+                - RHEL provides commercial support.
+                - Rocky Linux and similar distributions are popular alternatives.
+                - Designed for stability and long-term use.
+
+            4. Debian
+                - Known for reliability and stability.
+                - Ubuntu is based on Debian.
+                - Good choice for servers and critical systems.
+
+
+    # Terminal and Bash Shell:
+        Many Linux servers are managed mainly through the command line.
+
+        # Terminal:
+            - A text-based application used to type commands and see output.
+
+        # Shell:
+            - A program that reads your commands.
+            - It interprets the commands and tells the operating system what to do.
+
+        # Bash:
+            - Bash is one of the most common Linux shells.
+
+
+    # Bash Prompt Example:
+        Example:
+
+            [ec2-user@ip-10-0-1-25 ~]$
+
+        # Prompt Breakdown:
+            ec2-user
+                --> Username currently logged in.
+
+            @
+                --> Separates username from hostname.
+
+            ip-10-0-1-25
+                --> Hostname of the server.
+
+            ~
+                --> Current user's home directory.
+
+            ]
+                --> Closing bracket of the prompt.
+
+            $
+                --> Normal user prompt.
+
+            #
+                --> Commonly indicates the root user.
+
+            Cursor
+                --> Shows where the next command will be typed.
+
+
+    # Linux File System:
+        Linux uses a tree-like file system that starts from the root directory.
+
+        # Root Directory:
+            /
+                - Top of the Linux file system.
+                - All files and folders start under this directory.
+
+
+        # Important Directories:
+            1. /home
+                - User home directories.
+                - Example:
+                    /home/ec2-user
+
+            2. /etc
+                - System configuration files.
+
+            3. /var/log
+                - Log files for system services and applications.
+                - Useful for troubleshooting.
+
+            4. /tmp
+                - Temporary files.
+                - Do not store important permanent data here.
+
+            5. /usr/bin
+                - Many user commands and programs.
+
+            6. /bin
+                - Essential system commands.
+
+            7. /boot
+                - Files required to boot the system.
+
+            8. /dev
+                - Device files representing hardware and devices.
+
+            9. /lib
+                - Shared libraries required by system programs.
+
+            10. /var
+                - Variable data such as logs, cache, mail, and spool files.
+
+
+    # Quick Summary:
+        1. Operating System
+            --> Software between hardware and applications.
+
+        2. Linux
+            --> Open-source operating system widely used on servers and cloud.
+
+        3. Linux Distribution
+            --> A packaged version of Linux with its own tools and support.
+
+        4. Terminal
+            --> Application used to enter commands.
+
+        5. Shell
+            --> Program that interprets commands.
+
+        6. Bash
+            --> Common Linux shell.
+
+        7. /
+            --> Root of the Linux file system.
+
+        8. /home
+            --> User home directories.
+
+        9. /etc
+            --> Configuration files.
+
+        10. /var/log
+            --> System and application logs.
+
+
+    # Lecture Summary:
+        "Linux is an open-source operating system widely used in servers and cloud computing.
+        It is commonly managed through the terminal and Bash shell, and its file system
+        starts from the root directory (/)."
