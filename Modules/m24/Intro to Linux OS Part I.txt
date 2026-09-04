@@ -1,3 +1,5 @@
+
+
 # Introduction to Linux Operating System Part I:
     This lecture introduces operating systems, Linux, Linux distributions,
     the terminal and Bash shell, and the basic Linux file system.
