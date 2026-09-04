@@ -1,0 +1,145 @@
+
+
+# IAM Fundamentals Part I:
+    IAM stands for Identity and Access Management.
+
+    IAM controls who can access AWS and what they are allowed to do.
+
+
+    # Why IAM is Important:
+        Without IAM:
+            - Users may get too much access.
+            - Anyone could change settings they should not control.
+
+        With IAM:
+            - Each user gets only the permissions needed for their job.
+
+        Example:
+            - Admin --> Administrative access
+            - Developer --> Development-related access
+            - Finance --> Billing and finance-related access
+
+        This helps keep AWS accounts secure and organized.
+
+
+    # Root User vs IAM User:
+        # Root User:
+            - Has full access to the AWS account.
+            - Can change almost everything.
+            - Very powerful and should be protected carefully.
+
+        # IAM User:
+            - Created inside the AWS account.
+            - Gets only the permissions assigned to it.
+            - Can be restricted based on job responsibilities.
+
+        # Security Benefit:
+            - If the root user is compromised, the whole AWS account is at risk.
+            - If a limited IAM user is compromised, the damage is usually limited
+              to the permissions given to that user.
+
+
+    # Four Main IAM Components:
+        1. Users
+            - Individual identities.
+            - Can represent a person or application.
+
+        2. Groups
+            - Collections of IAM users.
+            - Used to give the same permissions to multiple users.
+
+        3. Roles
+            - Temporary identities with permissions.
+            - Commonly used by AWS services.
+
+            Examples:
+                - EC2
+                - Lambda
+
+        4. Policies
+            - JSON documents that define permissions.
+            - Specify which actions are:
+                - Allowed
+                - Denied
+
+
+    # Authentication vs Authorization:
+        IAM helps solve two main security questions.
+
+        # Authentication:
+            "Who are you?"
+
+            - Confirms the identity of the user.
+            - Usually done using login credentials.
+
+            Example:
+                - Username + Password
+
+        # Authorization:
+            "What are you allowed to do?"
+
+            - Checks the permissions of the authenticated user.
+            - Decides which AWS actions the user can perform.
+
+
+    # Simple Login Example:
+        A developer tries to log in to AWS.
+
+        Step 1: Authentication
+            - AWS checks the username and password.
+            - If correct, the user can log in.
+
+        Step 2: Authorization
+            - AWS checks the user's assigned permissions.
+            - The developer can only perform allowed actions.
+
+
+    # IAM Console Overview:
+        In the IAM console, common sections include:
+
+            1. Users
+            2. User Groups
+            3. Policies
+            4. Roles
+
+        You can also find:
+            - AWS Account ID
+            - IAM Sign-in URL
+
+
+    # IAM Sign-in URL:
+        IAM users can use a special account login URL to access AWS.
+
+        This is different from signing in as the root user.
+
+
+    # Quick Summary:
+        1. IAM
+            --> Controls identities and permissions in AWS.
+
+        2. Root User
+            --> Full account access.
+
+        3. IAM User
+            --> Limited access based on assigned permissions.
+
+        4. IAM Group
+            --> Collection of users.
+
+        5. IAM Role
+            --> Temporary identity, often used by AWS services.
+
+        6. IAM Policy
+            --> JSON document that defines permissions.
+
+        7. Authentication
+            --> Who are you?
+
+        8. Authorization
+            --> What are you allowed to do?
+
+
+    # Lecture Summary:
+        "IAM helps secure AWS by giving users and services only the access they need.
+        Its main components are Users, Groups, Roles, and Policies. Authentication checks
+        who you are, while Authorization checks what you are allowed to do."
