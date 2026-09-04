@@ -1,3 +1,5 @@
+
+
 # Connecting and Configuring EC2:
     This lecture shows how to connect to a Linux EC2 instance, install and configure Nginx,
     publish a simple website, troubleshoot common issues, monitor the instance, and control cost.
