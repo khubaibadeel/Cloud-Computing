@@ -1,0 +1,191 @@
+
+
+# IAM Fundamentals Part II:
+    This lecture explains IAM user access types, access keys, IAM groups,
+    AWS managed policies, and password policies.
+
+
+    # Types of IAM User Access:
+        IAM users can access AWS in different ways depending on their work.
+
+
+    # 1. Console Access:
+        Console access is used when a person needs to sign in to the AWS Management Console.
+
+        Example:
+            - A developer needs to launch or manage:
+                - EC2
+                - S3
+                - Lambda
+
+        When console access is enabled:
+            - The user gets a username.
+            - A password is created for console login.
+            - The user can sign in through the IAM sign-in page.
+
+
+    # 2. Programmatic Access:
+        Programmatic access is used when AWS is accessed through tools or applications.
+
+        Examples:
+            - AWS CLI
+            - SDKs
+            - Applications
+            - Automation scripts
+
+        Programmatic access commonly uses:
+            - Access Key ID
+            - Secret Access Key
+
+
+    # Access Key and Secret Access Key:
+        # Access Key ID:
+            - Similar to a username.
+            - Identifies the AWS access key.
+
+        # Secret Access Key:
+            - Similar to a password.
+            - Must remain private.
+
+        Important:
+            - The secret access key is shown only when it is created.
+            - Store or download it securely.
+            - If it is lost, create a new access key instead of trying to recover it.
+
+
+    # Access Key Security Best Practices:
+        1. Never hardcode access keys inside application source code.
+
+        2. Never upload access keys to:
+            - GitHub
+            - Git repositories
+            - Public files
+
+        3. Keep credentials in a secure location.
+
+        4. Remove or rotate access keys that are no longer needed.
+
+        5. Prefer IAM Roles instead of long-term access keys when AWS services
+           such as EC2 or Lambda need AWS permissions.
+
+        Why?
+            - If an access key is stolen, an attacker can use the permissions
+              assigned to that IAM identity.
+
+
+    # IAM Groups:
+        An IAM Group is a collection of IAM users.
+
+        # Why Use Groups?
+            - Makes permission management easier.
+            - Avoids assigning the same permissions to every user separately.
+
+        Example:
+            Suppose an organization has 50 developers.
+
+            Instead of:
+                - Giving developer permissions to all 50 users one by one.
+
+            Better approach:
+                1. Create a group called Developers.
+                2. Attach developer-related policies to the group.
+                3. Add the 50 IAM users to the group.
+
+        Result:
+            - Users in the group receive the permissions attached to that group.
+
+
+    # Group Permission Example:
+        Developer IAM User
+            --> Added to Developers Group
+            --> Developers Group has required policies
+            --> User receives those permissions
+
+
+    # AWS Managed Policies:
+        AWS provides ready-made policies called AWS Managed Policies.
+
+        Common examples include:
+
+            1. AdministratorAccess
+                - Very broad administrative permissions.
+
+            2. ReadOnlyAccess
+                - Read-only permissions across many AWS services.
+
+            3. Service-Specific Read-Only Policies
+                Examples:
+                    - AmazonEC2ReadOnlyAccess
+                    - AmazonS3ReadOnlyAccess
+
+        These policies can be attached to:
+            - Users
+            - Groups
+            - Roles
+
+
+    # Power User Access:
+        AWS also provides Power User style managed permissions.
+
+        Common use:
+            - Advanced users or developers who need broad service access
+              but should not necessarily manage all IAM permissions.
+
+        Always check the exact permissions of a policy before assigning it.
+
+
+    # IAM Password Policy:
+        AWS accounts can define password requirements for IAM users.
+
+        Password policies can control things such as:
+            - Minimum password length
+            - Required character types
+            - Password expiration rules
+            - Password reuse restrictions
+
+        Purpose:
+            - Improve account security.
+            - Meet organizational or compliance requirements.
+
+
+    # Console Access vs Programmatic Access:
+        1. Console Access
+            - Used by people.
+            - Access through a web browser.
+            - Uses username and password.
+
+        2. Programmatic Access
+            - Used by CLI, SDKs, scripts, or applications.
+            - Uses access credentials such as access keys.
+
+
+    # Quick Summary:
+        1. Console Access
+            --> Used for AWS Management Console login.
+
+        2. Programmatic Access
+            --> Used by CLI, SDKs, scripts, and applications.
+
+        3. Access Key ID
+            --> Identifies programmatic credentials.
+
+        4. Secret Access Key
+            --> Private credential that must be protected.
+
+        5. IAM Group
+            --> Collection of IAM users.
+
+        6. Group Benefit
+            --> Assign permissions once to many users.
+
+        7. AWS Managed Policy
+            --> Ready-made policy provided and maintained by AWS.
+
+        8. Password Policy
+            --> Defines password security requirements for IAM users.
+
+
+    # Lecture Summary:
+        "IAM users can access AWS through the console or programmatically. Access keys must be
+        protected carefully, IAM groups make permission management easier, AWS managed policies
+        provide ready-made permissions, and password policies help enforce stronger security."
