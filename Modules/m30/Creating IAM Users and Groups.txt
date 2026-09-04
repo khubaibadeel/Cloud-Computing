@@ -1,0 +1,233 @@
+
+
+# Creating IAM Users and Groups:
+    This lecture shows how to create an IAM user, create access keys,
+    create an IAM group, and change the IAM password policy.
+
+
+    # Step 1: Open IAM:
+        1. Sign in to the AWS Console.
+        2. Search for IAM.
+        3. Open the IAM service.
+
+        In the left menu, you can see:
+            - Users
+            - User Groups
+            - Roles
+            - Policies
+
+
+    # Step 2: Create an IAM User:
+        1. Open IAM > Users.
+        2. Click "Create user".
+        3. Enter a username.
+
+        Example:
+            - developer-user
+
+
+    # Step 3: Enable Console Access:
+        If the IAM user is a real person who needs the AWS Management Console:
+
+            - Enable console access.
+            - AWS can generate a temporary password.
+            - Enable:
+                "User must create a new password at next sign-in"
+
+        This forces the user to replace the temporary password after first login.
+
+
+    # Step 4: Create the User:
+        During user creation, you can also:
+            - Add the user to a group.
+            - Attach permissions directly.
+            - Attach policies.
+
+        For a simple user:
+            - You can create the user first without permissions.
+
+
+    # IAM Sign-in Details:
+        After creating the user, AWS provides:
+
+            - Console sign-in URL
+            - Username
+            - Temporary password
+
+        You can download these details as a CSV file.
+
+        Important:
+            - Share login details securely.
+
+
+    # First Login:
+        When the user signs in for the first time:
+
+            1. Enter the IAM username.
+            2. Enter the temporary password.
+            3. Create a new password if required.
+
+        If the user has no permissions:
+            - The user can still sign in.
+            - AWS services may show "Access Denied".
+
+
+    # Creating Access Keys:
+        Access keys are used for programmatic access.
+
+        Steps:
+            1. Open IAM > Users.
+            2. Select the required user.
+            3. Open "Security credentials".
+            4. Find Access Keys.
+            5. Click "Create access key".
+
+
+    # Access Key Details:
+        AWS creates:
+
+            1. Access Key ID
+                - Similar to a username.
+
+            2. Secret Access Key
+                - Similar to a password.
+
+        Important:
+            - The Secret Access Key is shown only once.
+            - Download or store it securely.
+            - If lost, create a new access key.
+
+
+    # Access Key Security:
+        - Do not hardcode access keys in source code.
+        - Do not upload them to GitHub.
+        - Do not share them publicly.
+        - Deactivate unused access keys.
+        - Delete access keys that are no longer needed.
+
+        If an access key is compromised:
+            1. Deactivate or delete it.
+            2. Create a new access key.
+
+
+    # Creating an IAM Group:
+        An IAM Group is a collection of IAM users.
+
+        Steps:
+            1. Open IAM > User Groups.
+            2. Click "Create group".
+            3. Enter a group name.
+
+        Example:
+            - Developers
+
+        4. Select users to add to the group.
+        5. Attach policies if required.
+        6. Create the group.
+
+
+    # Why Use IAM Groups?
+        Groups make permission management easier.
+
+        Example:
+            Instead of giving the same permissions to 50 developers one by one:
+
+                - Create one Developers group.
+                - Attach developer permissions to the group.
+                - Add all developers to that group.
+
+        Result:
+            - All users in the group receive the group's permissions.
+
+
+    # IAM Password Policy:
+        IAM password policies control password requirements for IAM users.
+
+        Open:
+            IAM > Account Settings > Password Policy
+
+
+    # Default Password Policy:
+        AWS provides a default password policy.
+
+        You can replace it with a custom policy based on company requirements.
+
+
+    # Custom Password Policy Options:
+        You can configure:
+
+            1. Minimum Password Length
+                Example:
+                    - 12 characters
+
+            2. Character Requirements
+                - Uppercase letters
+                - Lowercase letters
+                - Numbers
+                - Special characters
+
+            3. Password Expiration
+                Example:
+                    - Expire every 30 days
+
+            4. Allow Users to Change Their Own Password
+                - Users can update their own passwords.
+
+            5. Password Reuse Prevention
+                Example:
+                    - Prevent reuse of the last 5 passwords.
+
+            6. Administrator Reset Requirements
+                - Can require administrator involvement in some password reset situations.
+
+
+    # Password Policy Example:
+        Company Requirement:
+
+            - Minimum length --> 12 characters
+            - At least one uppercase letter
+            - At least one lowercase letter
+            - At least one number or special character
+            - Password expires periodically
+            - Last 5 passwords cannot be reused
+
+
+    # Quick Practical Flow:
+        IAM
+            --> Create User
+            --> Enable Console Access if Needed
+            --> Get Sign-in Details
+            --> Test Login
+            --> Create Access Key if Needed
+            --> Create User Group
+            --> Add User to Group
+            --> Configure Password Policy
+
+
+    # Quick Summary:
+        1. IAM User
+            --> Individual AWS identity.
+
+        2. Console Access
+            --> Used for AWS Management Console login.
+
+        3. Access Key
+            --> Used for programmatic access.
+
+        4. Secret Access Key
+            --> Private credential shown only once.
+
+        5. IAM Group
+            --> Collection of IAM users.
+
+        6. Group Benefit
+            --> Assign permissions to many users more easily.
+
+        7. Password Policy
+            --> Controls password security requirements.
+
+
+    # Lecture Summary:
+        "Create IAM users for individual access, use access keys only when programmatic access is needed,
+        organize users into groups for easier permission management, and use password policies to enforce
+        stronger account security."
