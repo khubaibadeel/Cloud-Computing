@@ -1,3 +1,5 @@
+
+
 # Amazon Machine Images:
     An Amazon Machine Image (AMI) is a reusable template used to launch EC2 instances.
 
