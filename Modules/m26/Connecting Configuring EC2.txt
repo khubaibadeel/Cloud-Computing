@@ -1,0 +1,315 @@
+# Connecting and Configuring EC2:
+    This lecture shows how to connect to a Linux EC2 instance, install and configure Nginx,
+    publish a simple website, troubleshoot common issues, monitor the instance, and control cost.
+
+
+    # Step 1: Connect to the EC2 Instance:
+        1. Open AWS Console.
+        2. Go to EC2 > Instances.
+        3. Select the running Linux instance.
+        4. Click "Connect".
+        5. Use EC2 Instance Connect or SSH.
+
+        Common Amazon Linux username:
+            - ec2-user
+
+
+    # Step 2: Update the System:
+        Run:
+
+            sudo dnf update -y
+
+        Purpose:
+            - Updates installed packages.
+            - -y automatically confirms prompts.
+
+
+    # Step 3: Install Nginx:
+        Run:
+
+            sudo dnf install nginx
+
+        Nginx is a web server used to serve websites and web applications.
+
+
+    # Step 4: Start and Check Nginx:
+        Start Nginx:
+
+            sudo systemctl start nginx
+
+        Check status:
+
+            sudo systemctl status nginx
+
+        Look for:
+
+            Active: active (running)
+
+
+    # Step 5: Enable Nginx at Boot:
+        Run:
+
+            sudo systemctl enable nginx
+
+        Purpose:
+            - Starts Nginx automatically after the instance reboots.
+
+
+    # Step 6: Open the Web Directory:
+        Nginx website files are commonly stored in:
+
+            /usr/share/nginx/html
+
+        Example:
+
+            cd /usr/share/nginx/html
+            ls -l
+
+
+    # Step 7: Back Up the Default Page:
+        Rename the default page:
+
+            sudo mv index.html index.html.bak
+
+        Why sudo?
+            - The folder is normally owned by root.
+            - Without sudo, you may get "Permission denied".
+
+
+    # Step 8: Create or Edit the Website:
+        Run:
+
+            sudo nano index.html
+
+        Add your HTML content and save the file.
+
+        Check the content:
+
+            cat index.html
+
+
+    # Step 9: Restart Nginx:
+        After changing the website, restart Nginx:
+
+            sudo systemctl restart nginx
+
+
+    # Step 10: Test Locally:
+        Test the website from inside the EC2 instance:
+
+            curl localhost
+
+        If the HTML appears, Nginx is serving the page correctly.
+
+
+    # Step 11: Allow HTTP in the Security Group:
+        Add an inbound rule:
+
+            - Type --> HTTP
+            - Protocol --> TCP
+            - Port --> 80
+            - Source --> 0.0.0.0/0
+
+        SSH normally uses:
+
+            - Type --> SSH
+            - Protocol --> TCP
+            - Port --> 22
+            - Source --> Prefer your own trusted IP
+
+        Important:
+            - 0.0.0.0/0 means traffic is allowed from anywhere.
+            - This is common for a public website on Port 80.
+            - Avoid opening SSH Port 22 to everyone unless necessary.
+
+
+    # Step 12: Open the Website:
+        Copy the EC2 Public IPv4 address.
+
+        Open:
+
+            http://PUBLIC-IP
+
+        If everything is correct, your website will appear in the browser.
+
+
+    # Troubleshooting Checklist:
+        # Problem 1: Website Times Out
+            Check:
+                - Security Group allows TCP Port 80.
+                - Nginx is running.
+
+            Command:
+
+                sudo systemctl status nginx
+
+
+        # Problem 2: 403 Forbidden
+            Check:
+                - File permissions.
+                - File ownership.
+                - Nginx can read index.html.
+
+
+        # Problem 3: Old Page Still Appears
+            Try:
+                - Restart Nginx.
+                - Hard refresh the browser.
+
+            Command:
+
+                sudo systemctl restart nginx
+
+
+        # Problem 4: Connection Refused
+            Check:
+                - Nginx is running.
+                - Correct port is being used.
+                - Security Group is configured correctly.
+
+
+        # Useful Nginx Logs:
+            Service logs:
+
+                journalctl -u nginx
+
+            Error log:
+
+                /var/log/nginx/error.log
+
+
+    # EC2 Monitoring:
+        AWS CloudWatch provides monitoring metrics for EC2.
+
+        Common metric:
+            - CPUUtilization
+
+        In the EC2 console:
+            - Select the instance.
+            - Open the Monitoring tab.
+            - Review CPU and other available metrics.
+
+
+    # CloudWatch Alarm Example:
+        Example CPU alarm:
+
+            Metric --> CPUUtilization
+            Threshold --> Greater than 80%
+            Period --> About 5 minutes
+            Action --> Send notification using SNS
+
+        Purpose:
+            - Alerts you when CPU usage becomes too high.
+
+
+    # Monitoring Best Practices:
+        1. Enable detailed monitoring for important production systems.
+            - Gives more frequent metric data.
+
+        2. Create useful alarms.
+            Examples:
+                - CPUUtilization > 80%
+                - StatusCheckFailed >= 1
+
+        3. Install CloudWatch Agent when you need:
+            - Memory usage
+            - Disk usage
+            - Additional system metrics
+
+        4. Create dashboards for important metrics.
+
+
+    # Cost Checks After Launch:
+        1. Use AWS Cost Explorer or Billing Dashboard.
+            - Review EC2 spending.
+
+        2. Create AWS Budgets and billing alerts.
+            - Helps prevent unexpected charges.
+
+        3. Stop instances when not needed.
+            - Compute charges stop when the instance is stopped.
+            - EBS storage charges can continue.
+
+        4. Review Elastic IP usage.
+            - Remove or release unused public IP resources when they are no longer required.
+
+
+    # Operational Checklist:
+        # Monitoring:
+            - CloudWatch metrics enabled.
+            - CPU alarm configured.
+            - Status check alarm configured.
+
+        # Security:
+            - Only required ports are open.
+            - SSH is restricted to trusted IP addresses.
+            - Security Group rules are reviewed regularly.
+
+        # Backup:
+            - Create EBS snapshots when needed.
+            - Create an AMI before major changes when appropriate.
+
+        # Cost Optimization:
+            - Stop unused instances.
+            - Review instance size.
+            - Check EBS volumes and public IP resources.
+            - Review AWS billing regularly.
+
+
+    # Useful Commands:
+        sudo dnf update -y
+            --> Update packages.
+
+        sudo dnf install nginx
+            --> Install Nginx.
+
+        sudo systemctl start nginx
+            --> Start Nginx.
+
+        sudo systemctl status nginx
+            --> Check Nginx status.
+
+        sudo systemctl enable nginx
+            --> Start Nginx automatically after reboot.
+
+        sudo systemctl restart nginx
+            --> Restart Nginx after configuration changes.
+
+        cd /usr/share/nginx/html
+            --> Open Nginx website directory.
+
+        sudo mv index.html index.html.bak
+            --> Back up the default web page.
+
+        sudo nano index.html
+            --> Create or edit the website.
+
+        cat index.html
+            --> Display website file content.
+
+        curl localhost
+            --> Test the web server locally.
+
+        journalctl -u nginx
+            --> View Nginx service logs.
+
+
+    # Quick Flow:
+        Connect to EC2
+            --> Update Linux
+            --> Install Nginx
+            --> Start and Enable Nginx
+            --> Edit index.html
+            --> Restart Nginx
+            --> Test with curl
+            --> Allow HTTP Port 80
+            --> Open Public IP in Browser
+            --> Monitor with CloudWatch
+            --> Set Alarms
+            --> Review Security, Backup, and Cost
+
+
+    # Lecture Summary:
+        "Connect to the Linux EC2 instance, install and configure Nginx, allow HTTP traffic,
+        publish the website, troubleshoot with service status and logs, monitor the instance
+        with CloudWatch, and regularly review security, backups, and cost."
