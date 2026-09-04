@@ -1,0 +1,206 @@
+# Amazon Machine Images:
+    An Amazon Machine Image (AMI) is a reusable template used to launch EC2 instances.
+
+    # Simple Analogy:
+        - Think of an AMI like a stamp.
+        - Create it once and reuse it many times.
+
+        If an EC2 instance is already configured with the required:
+            - Operating System
+            - Applications
+            - Libraries
+            - Settings
+
+        You can save that setup as an AMI and launch new EC2 instances from it.
+
+
+    # Why Use an AMI?
+        - Avoid configuring the same server again and again.
+        - Launch identical EC2 instances quickly.
+        - Standardize server configurations.
+        - Help with scaling and recovery.
+        - Create a reusable copy before major changes.
+
+
+    # Types of AMIs:
+        1. AWS / Official AMIs
+            - Ready-made images available through AWS.
+            - Examples:
+                - Amazon Linux
+                - Ubuntu
+                - Windows Server
+                - Red Hat
+
+        2. Community / Marketplace AMIs
+            - Created and published by third parties.
+            - Some are free.
+            - Some are paid.
+
+            Example:
+                - An Nginx-ready AMI can be published so another user
+                  can launch a preconfigured Nginx server.
+
+        3. Custom AMIs
+            - Created from your own configured EC2 instance.
+            - Useful when you want to reuse your exact setup.
+
+
+    # AMI Sharing:
+        You can share a custom AMI with another AWS account.
+
+        Basic idea:
+            - Create the AMI.
+            - Share it with the required AWS Account ID.
+
+        Example:
+            - You configure an Nginx server.
+            - Save it as an AMI.
+            - Share the AMI with another AWS account.
+
+
+    # AMIs are Regional:
+        An AMI belongs to a specific AWS Region.
+
+        Example:
+            - An AMI created in Stockholm cannot directly be used in Singapore.
+
+        To use it in another Region:
+            - Copy the AMI to that Region first.
+
+
+    # Common AMI Use Cases:
+        1. Scaling:
+            - Launch multiple EC2 instances with the same configuration.
+            - Commonly used with Auto Scaling.
+
+        2. Backup Before Changes:
+            - Create an AMI before making major server changes.
+            - Helps recreate the server if something goes wrong.
+
+        3. Standard Server Builds:
+            - Keep the same software and settings across many instances.
+
+        4. Disaster Recovery:
+            - Use a trusted AMI to recreate an EC2 instance when required.
+
+
+    # Golden AMI:
+        A Golden AMI is a trusted, tested, and fully configured AMI.
+
+        It may contain:
+            - Required applications
+            - Security patches
+            - System settings
+            - Standard configurations
+
+        # Benefit:
+            - Every EC2 instance launched from it starts with the same trusted setup.
+
+
+    # Creating an AMI from an EC2 Instance:
+        1. Open AWS Console.
+        2. Go to EC2 > Instances.
+        3. Select the required EC2 instance.
+        4. Click:
+            Actions > Image and templates > Create image
+
+        5. Enter a descriptive image name.
+
+            Example:
+                - nginx-web-server-ami
+
+        6. Review the attached volumes.
+        7. Click "Create image".
+
+
+    # AMI Creation Status:
+        After creating the AMI:
+
+            Pending
+                --> AWS is creating the image.
+
+            Available
+                --> The AMI is ready to use.
+
+        Creation time depends partly on the amount of storage/data involved.
+
+
+    # Launching an EC2 Instance from an AMI:
+        1. Open EC2 > AMIs.
+        2. Select the required AMI.
+        3. Click "Launch instance from AMI".
+
+        OR
+
+        During normal EC2 launch:
+            - Go to My AMIs / Owned by me.
+            - Select your custom AMI.
+            - Complete the normal EC2 launch settings.
+
+
+    # Managing an AMI:
+        From the AMI page, you can:
+
+            - Launch an instance from the AMI.
+            - Copy the AMI to another Region.
+            - Share the AMI.
+            - Deregister the AMI when it is no longer needed.
+
+
+    # Copying an AMI to Another Region:
+        Example:
+            Source Region:
+                - Europe (Stockholm)
+
+            Destination Region:
+                - Asia Pacific (Singapore)
+
+        Steps:
+            1. Select the AMI.
+            2. Choose Copy AMI.
+            3. Select the destination Region.
+            4. Start the copy.
+            5. Wait until the copied AMI becomes available.
+
+        After that, the AMI can be used in the destination Region.
+
+
+    # Quick Flow:
+        Configure EC2 Instance
+            --> Create AMI
+            --> Wait for Available Status
+            --> Reuse AMI
+            --> Launch New EC2 Instances
+
+        For Another Region:
+            AMI
+            --> Copy AMI
+            --> Select Destination Region
+            --> Wait for Available
+            --> Launch Instance
+
+
+    # Quick Summary:
+        1. AMI
+            --> Reusable template for EC2 instances.
+
+        2. Custom AMI
+            --> Created from your own configured EC2 instance.
+
+        3. Marketplace AMI
+            --> Published by third-party providers.
+
+        4. Golden AMI
+            --> Trusted and standardized server image.
+
+        5. AMIs are Regional
+            --> Copy them before using them in another Region.
+
+        6. Main Benefits
+            --> Faster deployment, consistency, scaling, and recovery.
+
+
+    # Lecture Summary:
+        "An AMI is a reusable EC2 template. You can create an AMI from a configured instance,
+        launch new instances from it, share it with another AWS account, and copy it to another
+        AWS Region when needed."
