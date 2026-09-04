@@ -1,2 +1,363 @@
 
 
+# Introduction to Linux Operating System Part II:
+    This lecture focuses on practical Linux commands, file management,
+    logs, package management, users, and permissions.
+
+
+    # Connecting to Linux EC2:
+        You can connect to a Linux EC2 instance from the AWS Console using EC2 Instance Connect.
+
+        Common default username:
+            - Amazon Linux --> ec2-user
+
+
+    # Basic Linux Commands:
+        1. whoami
+            - Shows the currently logged-in user.
+
+        2. ls
+            - Lists files and directories.
+
+        3. ls -l
+            - Shows detailed file information.
+
+        4. ls -la
+            - Shows detailed information including hidden files.
+
+        5. pwd
+            - Shows the current working directory.
+
+        6. cd directory
+            - Changes to another directory.
+
+
+    # Creating Directories:
+        # mkdir
+            - Creates a directory.
+
+            Example:
+                mkdir cloud-course
+
+        # mkdir -p
+            - Creates nested directories in one command.
+
+            Example:
+                mkdir -p nest-1/nest-2/nest-3
+
+
+    # Creating and Editing Files:
+        # touch
+            - Creates an empty file.
+
+            Example:
+                touch file.txt
+
+        # nano
+            - Opens a file in the Nano text editor.
+
+            Example:
+                nano file.txt
+
+        # cat
+            - Displays the full content of a file.
+
+            Example:
+                cat file.txt
+
+
+    # Copying, Moving, and Deleting:
+        # cp
+            - Copies a file.
+
+            Syntax:
+                cp source destination
+
+            Example:
+                cp file.txt file-2.txt
+
+        # mv
+            - Moves or renames a file.
+
+            Syntax:
+                mv source destination
+
+            Examples:
+                mv file-2.txt file-new.txt
+                mv file.txt nest-1/
+
+        # rm
+            - Deletes a file.
+
+            Example:
+                rm file-new.txt
+
+        # rm -r
+            - Deletes a directory and its contents.
+
+            Example:
+                rm -r nest-2/
+
+        Important:
+            - Be careful with rm because deleted files are not moved to a recycle bin.
+
+
+    # Viewing File Sizes:
+        # ls -lh
+            - Lists files with human-readable sizes.
+
+            Example:
+                ls -lh
+
+
+    # Working with Logs:
+        Linux logs are commonly stored in:
+
+            /var/log
+
+        Example:
+            cd /var/log
+            ls
+
+
+    # Viewing Log Files:
+        # less
+            - Opens a file for scrolling and reading.
+
+            Example:
+                less dnf.log
+
+        # head
+            - Shows the first lines of a file.
+
+            Example:
+                head -n 10 cloud-init.log
+
+        # tail
+            - Shows the last lines of a file.
+
+            Example:
+                tail -n 10 cloud-init.log
+
+        # tail -f
+            - Watches a file live as new lines are added.
+
+            Example:
+                tail -f cloud-init.log
+
+        # cat
+            - Displays the complete file.
+
+            Example:
+                cat dnf.log
+
+
+    # Searching Inside Files:
+        # grep
+            - Searches for text inside a file.
+
+            Examples:
+                grep "Extra" dnf.log
+                grep -i "amazon" dnf.log
+
+        # -i
+            - Makes the search case-insensitive.
+
+
+    # Package Management:
+        Amazon Linux uses DNF for software package management.
+
+        Common commands:
+
+            sudo dnf update
+                - Updates available packages.
+
+            sudo dnf install package-name
+                - Installs a package.
+
+            sudo dnf remove package-name
+                - Removes a package.
+
+        Important:
+            - Many package commands require administrator privileges.
+            - Without sudo, you may get a permission error.
+
+
+    # Root and Sudo:
+        # sudo
+            - Runs a command with administrator privileges.
+
+        # Root User
+            - The main administrator account in Linux.
+            - The root prompt commonly ends with:
+
+                #
+
+        Normal user prompt commonly ends with:
+
+                $
+
+
+    # User Management:
+        Common root-level commands include:
+
+            useradd new-user
+                - Creates a new user.
+
+            userdel new-user
+                - Deletes a user.
+
+        These commands require administrator/root privileges.
+
+
+    # Understanding File Permissions:
+        Linux permissions control who can:
+
+            - Read a file
+            - Write to a file
+            - Execute a file
+
+        Example permission:
+
+            -rw-r--r--
+
+        # Permission Structure:
+            First character:
+                -  --> Regular file
+                d  --> Directory
+
+            Then three groups:
+                1. Owner
+                2. Group
+                3. Others
+
+
+    # Permission Letters:
+        r = Read
+        w = Write
+        x = Execute
+
+        Numeric values:
+
+            r = 4
+            w = 2
+            x = 1
+
+
+    # Common Permission Numbers:
+        400
+            - Owner can read only.
+
+        600
+            - Owner can read and write.
+
+        700
+            - Owner can read, write, and execute.
+
+        644
+            - Owner: read/write
+            - Group: read
+            - Others: read
+
+        755
+            - Owner: read/write/execute
+            - Group: read/execute
+            - Others: read/execute
+
+
+    # chmod:
+        chmod changes file permissions.
+
+        Examples:
+
+            chmod 755 script.sh
+                - Owner can read/write/execute.
+                - Group and others can read/execute.
+
+            chmod 600 secret.txt
+                - Only owner can read/write.
+
+            chmod 400 key.pem
+                - Only owner can read.
+                - Commonly used for SSH private keys.
+
+
+    # chown:
+        chown changes file ownership.
+
+        Syntax:
+            chown user:group file
+
+        Example:
+            chown alice:developers script.sh
+
+
+    # Quick Command Reference:
+        whoami
+            --> Show current user.
+
+        pwd
+            --> Show current directory.
+
+        ls
+            --> List files.
+
+        ls -l
+            --> Detailed list.
+
+        ls -la
+            --> Include hidden files.
+
+        mkdir
+            --> Create directory.
+
+        mkdir -p
+            --> Create nested directories.
+
+        touch
+            --> Create empty file.
+
+        nano
+            --> Edit file.
+
+        cat
+            --> Show file content.
+
+        cp
+            --> Copy file.
+
+        mv
+            --> Move or rename.
+
+        rm
+            --> Delete file.
+
+        rm -r
+            --> Delete directory and contents.
+
+        less
+            --> Read file page by page.
+
+        head
+            --> Show first lines.
+
+        tail
+            --> Show last lines.
+
+        tail -f
+            --> Watch live file changes.
+
+        grep
+            --> Search text.
+
+        chmod
+            --> Change permissions.
+
+        chown
+            --> Change ownership.
+
+
+    # Lecture Summary:
+        "Linux administration depends heavily on commands. The key skills are navigating directories,
+        creating and managing files, reading logs, managing packages and users, and understanding
+        file permissions using chmod and chown."
