@@ -1,7 +1,4 @@
 # IAM Policies and Permissions Part I:
-    This lecture introduces IAM policies and permissions and explains how AWS
-    decides what an IAM user, group, or role is allowed to do.
-
 
     # What is an IAM Policy?
         An IAM policy is a document that defines permissions in AWS.
@@ -153,23 +150,17 @@
 
         Common elements include:
 
-            1. Version
-                --> Defines the policy language version.
+            1. Version  --> Defines the policy language version.
 
-            2. Statement
-                --> Contains one or more permission statements.
+            2. Statement    --> Contains one or more permission statements.
 
-            3. Effect
-                --> Allow or Deny.
+            3. Effective    --> Allow or Deny.
 
-            4. Action
-                --> The AWS action being controlled.
+            4. Action    --> The AWS action being controlled.
 
-            5. Resource
-                --> The AWS resource the action applies to.
+            5. Resource    --> The AWS resource the action applies to.
 
-            6. Condition
-                --> Optional rules that control when the permission applies.
+            6. Condition    --> Optional rules that control when the permission applies.
 
 
     # Simple Policy Example:
@@ -369,7 +360,7 @@
     # Quick Summary:
         1. IAM Policy
             --> Defines permissions.
-            
+
         2. Permission
             --> Defines what an identity can do.
 
