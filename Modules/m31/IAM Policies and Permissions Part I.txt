@@ -383,6 +383,4 @@
 
 
     # Lecture Summary:
-        "IAM policies define what AWS identities and resources are allowed or denied
-        to do. Start with no access, grant only required permissions, understand the
-        basic JSON policy elements, and remember that an explicit Deny overrides an Allow."
+        "IAM policies define what AWS identities and resources are allowed or denied to do. Start with no access, grant only required permissions understand the basic JSON policy elements, and remember that an explicit Deny overrides an Allow."
