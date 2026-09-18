@@ -1,0 +1,308 @@
+# IAM Policies and Permissions Part II:
+    This lecture continues IAM policies and permissions and explains the main
+    elements inside a policy, how AWS evaluates permissions, and how to apply
+    least-privilege access.
+
+
+    # IAM Policy Statement:
+        An IAM policy can contain one or more statements.
+
+        Each statement tells AWS:
+            - Whether access is allowed or denied.
+            - Which AWS action is involved.
+            - Which resource the action applies to.
+            - Whether any additional conditions must be met.
+
+
+    # Main Elements of an IAM Policy:
+        Common policy elements include:
+
+            1. Effect
+            2. Action
+            3. Resource
+            4. Condition
+
+
+    # Effect:
+        Effect tells AWS whether the policy statement allows or denies access.
+
+        Possible values:
+
+            Allow
+                --> Gives permission.
+
+            Deny
+                --> Blocks permission.
+
+        Important:
+            - An explicit Deny overrides an Allow.
+
+
+    # Action:
+        Action defines what operation can be performed.
+
+        Examples:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+            - ec2:StartInstances
+            - ec2:StopInstances
+
+        Example:
+            "s3:GetObject"
+                --> Allows reading an object from Amazon S3.
+
+
+    # Resource:
+        Resource defines which AWS resource the action applies to.
+
+        Examples:
+            - An S3 bucket
+            - An object inside an S3 bucket
+            - An EC2 instance
+            - An IAM role
+
+        Resources are commonly identified using an ARN.
+
+
+    # ARN:
+        ARN stands for Amazon Resource Name.
+
+        An ARN uniquely identifies an AWS resource.
+
+        Example format:
+            arn:aws:service:region:account-id:resource
+
+        Example:
+            arn:aws:s3:::company-data/*
+
+        This can represent:
+            --> Objects inside the company-data S3 bucket.
+
+
+    # Wildcard (*):
+        The wildcard symbol * means "all" or "any".
+
+        Examples:
+
+            "Action": "s3:*"
+                --> All S3 actions.
+
+            "Resource": "*"
+                --> All applicable resources.
+
+        Important:
+            - Wildcards can make a policy very broad.
+            - Avoid unnecessary wildcards when more specific permissions can be used.
+
+
+    # Condition:
+        Condition adds an extra requirement before permission is applied.
+
+        A condition can be used to control access based on:
+
+            - IP address
+            - MFA
+            - Time
+            - Region
+            - Tags
+            - Other request information
+
+        Example:
+            Allow an action only when MFA is present.
+
+        Benefit:
+            - Conditions provide more precise control over permissions.
+
+
+    # Simple Policy Logic:
+        A policy can be understood using this basic structure:
+
+            Effect
+                --> Allow or Deny
+
+            Action
+                --> What can be done
+
+            Resource
+                --> Where it can be done
+
+            Condition
+                --> Extra rule that must be satisfied
+
+
+    # IAM Permission Evaluation:
+        AWS evaluates all applicable permissions before allowing a request.
+
+        Basic evaluation rule:
+
+            1. By default
+                --> DENY
+
+            2. If an applicable policy explicitly allows the action
+                --> ALLOW
+
+            3. If any applicable policy explicitly denies the action
+                --> DENY
+
+        Important:
+            Explicit Deny always wins.
+
+
+    # Permission Evaluation Example:
+        Suppose a user has two policies.
+
+        Policy 1:
+            Allow:
+                - s3:GetObject
+                - s3:PutObject
+
+        Policy 2:
+            Deny:
+                - s3:PutObject
+
+        Final result:
+
+            s3:GetObject
+                --> ALLOWED
+
+            s3:PutObject
+                --> DENIED
+
+        Why?
+            - The explicit Deny overrides the Allow.
+
+
+    # Least Privilege Principle:
+        Least privilege means giving only the permissions required to perform a job.
+
+        Example:
+            A user only needs to view files in an S3 bucket.
+
+        Better permission:
+            --> S3 read-only access.
+
+        Unnecessary permission:
+            --> Full S3 access.
+
+        Why Least Privilege Matters:
+            - Reduces security risk.
+            - Limits accidental changes.
+            - Reduces possible damage if credentials are compromised.
+
+
+    # Broad Access vs Specific Access:
+        Broad Access:
+            "Action": "s3:*"
+            "Resource": "*"
+
+            Result:
+                - Very large level of access.
+
+        Specific Access:
+            Allow only:
+                - s3:GetObject
+
+            On only:
+                - Required S3 bucket or objects.
+
+            Result:
+                - Safer and easier to control.
+
+
+    # Permissions Boundary:
+        A permissions boundary defines the maximum permissions that an IAM user
+        or IAM role can receive.
+
+        Think of it like a fence.
+
+        Identity Policy:
+            --> Says what the user or role may be allowed to do.
+
+        Permissions Boundary:
+            --> Defines the maximum limit of that permission.
+
+        Important:
+            - A permissions boundary does not directly grant permission.
+            - It limits the permissions that identity-based policies can grant.
+
+
+    # Permissions Boundary Example:
+        Suppose an IAM user has a policy allowing:
+
+            - EC2
+            - S3
+            - IAM
+
+        But the permissions boundary allows only:
+
+            - EC2
+            - S3
+
+        Final result:
+            - EC2 --> Can be allowed
+            - S3  --> Can be allowed
+            - IAM --> Cannot be allowed by that identity policy
+
+        The boundary prevents the user from going beyond its maximum limit.
+
+
+    # Why Permissions Boundaries are Useful:
+        Permissions boundaries are useful when:
+
+            1. Administrators delegate permission management.
+            2. Developers are allowed to create roles.
+            3. Organizations want to prevent users or roles from becoming too powerful.
+            4. A maximum security limit must always remain in place.
+
+
+    # Practical IAM Permission Strategy:
+        A good IAM permission strategy is:
+
+            1. Start with no access.
+            2. Identify exactly what the user needs.
+            3. Allow only the required actions.
+            4. Restrict permissions to required resources.
+            5. Add conditions where useful.
+            6. Avoid unnecessary wildcards.
+            7. Use explicit Deny when an action must always be blocked.
+            8. Review permissions regularly.
+
+
+    # Quick Summary:
+        1. Effect
+            --> Allow or Deny.
+
+        2. Action
+            --> Defines what operation can be performed.
+
+        3. Resource
+            --> Defines where the action can be performed.
+
+        4. Condition
+            --> Adds extra requirements.
+
+        5. ARN
+            --> Uniquely identifies an AWS resource.
+
+        6. Wildcard (*)
+            --> Means all or any.
+
+        7. Default Access
+            --> Denied unless permission is granted.
+
+        8. Explicit Deny
+            --> Overrides an Allow.
+
+        9. Least Privilege
+            --> Give only the permissions required.
+
+        10. Permissions Boundary
+            --> Defines the maximum permissions for an IAM user or role.
+
+
+    # Lecture Summary:
+        "IAM policies control what AWS identities can do by using elements such as
+        Effect, Action, Resource, and Condition. AWS denies access by default,
+        explicit Deny overrides Allow, and least privilege should be used to grant
+        only the permissions required for the job."
