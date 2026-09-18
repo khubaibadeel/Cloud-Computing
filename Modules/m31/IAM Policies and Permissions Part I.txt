@@ -1,0 +1,413 @@
+# IAM Policies and Permissions Part I:
+    This lecture introduces IAM policies and permissions and explains how AWS
+    decides what an IAM user, group, or role is allowed to do.
+
+
+    # What is an IAM Policy?
+        An IAM policy is a document that defines permissions in AWS.
+
+        A policy answers questions such as:
+            - What actions are allowed?
+            - What actions are denied?
+            - Which AWS resources can be accessed?
+            - Under what conditions is access allowed?
+
+        Most IAM policies are written as JSON documents.
+
+
+    # What are Permissions?
+        Permissions define what an identity can do in AWS.
+
+        Examples:
+            - Start an EC2 instance
+            - Stop an EC2 instance
+            - Read objects from an S3 bucket
+            - Upload objects to an S3 bucket
+            - Create IAM users
+
+        Important:
+            - IAM users do not automatically receive permissions.
+            - Permissions must be granted through policies.
+
+
+    # Default IAM Behavior:
+        AWS follows a secure default model:
+
+            - By default, access is denied.
+            - A request must be explicitly allowed by an applicable policy.
+            - An explicit Deny overrides an Allow.
+
+        Simple rule:
+
+            No Allow
+                --> Access Denied
+
+            Explicit Allow
+                --> Access Allowed
+
+            Allow + Explicit Deny
+                --> Access Denied
+
+
+    # Identity-Based Policies:
+        Identity-based policies are attached to IAM identities.
+
+        They can be attached to:
+            - Users
+            - User Groups
+            - Roles
+
+        They define what that identity is allowed or denied to do.
+
+
+    # Example:
+        Suppose a user named developer-user needs access to Amazon S3.
+
+        You can:
+            1. Attach an S3 policy directly to the user.
+
+        Or:
+
+            2. Add the user to a Developers group.
+            3. Attach the S3 policy to the Developers group.
+
+        Result:
+            - The user receives the permissions defined by the policy.
+
+
+    # Policies Attached to Groups:
+        Policies can be attached to IAM groups.
+
+        Example:
+            Developers Group
+                --> S3 Read Access Policy
+                --> EC2 Read Access Policy
+
+        Every IAM user added to the Developers group receives those permissions.
+
+        Benefit:
+            - Permissions are easier to manage for many users.
+
+
+    # Managed Policies:
+        A managed policy is a reusable policy that can be attached to multiple
+        users, groups, or roles.
+
+        Main types:
+
+            1. AWS Managed Policies
+                - Created and maintained by AWS.
+
+            2. Customer Managed Policies
+                - Created and maintained by your organization.
+
+
+    # AWS Managed Policies:
+        AWS provides ready-made policies for common permission requirements.
+
+        Examples may include:
+            - Read-only access
+            - Full access to a service
+            - Administrative access
+
+        Benefit:
+            - Quick and easy to attach.
+
+        Important:
+            - Always review the permissions before attaching a policy.
+
+
+    # Customer Managed Policies:
+        Customer managed policies are created inside your AWS account.
+
+        They are useful when:
+            - AWS managed policies are too broad.
+            - Your company needs specific permissions.
+            - You want more control over access.
+
+        Example:
+            Allow a developer to:
+                - View EC2 instances
+                - Start EC2 instances
+
+            But do not allow:
+                - Terminating EC2 instances
+
+
+    # Inline Policies:
+        An inline policy is embedded directly into one IAM identity.
+
+        It has a one-to-one relationship with:
+            - One user
+            - One group
+            - One role
+
+        If the identity is deleted:
+            - The inline policy is also deleted.
+
+        Managed policies are generally easier to reuse across multiple identities.
+
+
+    # Basic IAM Policy Structure:
+        Most IAM permission policies are JSON documents.
+
+        Common elements include:
+
+            1. Version
+                --> Defines the policy language version.
+
+            2. Statement
+                --> Contains one or more permission statements.
+
+            3. Effect
+                --> Allow or Deny.
+
+            4. Action
+                --> The AWS action being controlled.
+
+            5. Resource
+                --> The AWS resource the action applies to.
+
+            6. Condition
+                --> Optional rules that control when the permission applies.
+
+
+    # Simple Policy Example:
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "s3:ListBucket",
+                    "Resource": "arn:aws:s3:::example-bucket"
+                }
+            ]
+        }
+
+        Meaning:
+            - Effect   --> Allow
+            - Action   --> List the S3 bucket
+            - Resource --> example-bucket
+
+
+    # Effect:
+        The Effect element determines whether a policy statement:
+
+            - Allows access
+            OR
+            - Denies access
+
+        Values:
+            "Allow"
+            "Deny"
+
+
+    # Action:
+        The Action element defines which AWS operation is controlled.
+
+        Examples:
+            - ec2:StartInstances
+            - ec2:StopInstances
+            - s3:GetObject
+            - s3:PutObject
+            - iam:CreateUser
+
+        Actions are normally written as:
+
+            service:operation
+
+
+    # Resource:
+        The Resource element defines which AWS resource the permission applies to.
+
+        AWS resources are commonly identified using an ARN.
+
+        ARN:
+            Amazon Resource Name
+
+        Example:
+            arn:aws:s3:::example-bucket
+
+
+    # Wildcard Permissions:
+        The * symbol is a wildcard.
+
+        Example:
+            "Action": "s3:*"
+
+        Meaning:
+            - All supported S3 actions covered by that statement.
+
+        Example:
+            "Resource": "*"
+
+        Meaning:
+            - All applicable resources.
+
+        Important:
+            - Wildcards can create very broad permissions.
+            - Use them carefully.
+
+
+    # Explicit Deny:
+        An explicit Deny has priority over an Allow.
+
+        Example:
+
+            Policy 1:
+                Allow --> s3:GetObject
+
+            Policy 2:
+                Deny --> s3:GetObject
+
+        Final Result:
+            --> Access Denied
+
+
+    # Implicit Deny:
+        If no policy explicitly allows an action:
+
+            --> AWS denies the request.
+
+        This is called an implicit deny.
+
+        Example:
+            A user has permission to:
+                - View EC2 instances
+
+            The user tries to:
+                - Terminate an EC2 instance
+
+            If no policy allows termination:
+                --> Access Denied
+
+
+    # Permission Evaluation:
+        A simplified IAM permission decision is:
+
+            Request
+                --> Check applicable policies
+                --> Is there an explicit Deny?
+                    --> Yes --> DENY
+                    --> No
+                        --> Is there an applicable Allow?
+                            --> Yes --> ALLOW
+                            --> No  --> DENY
+
+
+    # Principle of Least Privilege:
+        A major IAM security principle is:
+
+            "Grant only the permissions required to perform the job."
+
+        Example:
+            If a user only needs to read S3 files:
+
+                Good:
+                    --> Grant read permissions.
+
+                Avoid:
+                    --> Grant full S3 administrative access without a need.
+
+        Benefit:
+            - Reduces security risk.
+            - Limits accidental changes.
+            - Limits damage if credentials are compromised.
+
+
+    # Resource-Based Policies:
+        Some AWS resources can have policies attached directly to the resource.
+
+        Common example:
+            - Amazon S3 bucket policy
+
+        Resource-based policies specify:
+            - Who can access the resource.
+            - What actions they can perform.
+
+        Identity-based and resource-based policies can both affect authorization.
+
+
+    # Permissions Boundaries:
+        A permissions boundary sets the maximum permissions that an IAM user
+        or role can receive from identity-based policies.
+
+        Important:
+            - A permissions boundary does not grant permissions by itself.
+            - It limits the maximum permissions available to the identity.
+
+        Simple idea:
+
+            Identity Policy
+                --> Says what may be allowed
+
+            Permissions Boundary
+                --> Sets the maximum limit
+
+            Effective Permissions
+                --> Permissions allowed by both
+
+
+    # Quick Practical Example:
+        Requirement:
+            A developer should be able to view EC2 instances but should not
+            terminate them.
+
+        Possible permission design:
+
+            Allow:
+                - ec2:DescribeInstances
+
+            Do not grant:
+                - ec2:TerminateInstances
+
+        Result:
+            - Developer can view EC2 information.
+            - Developer cannot terminate instances.
+
+
+    # Quick Summary:
+        1. IAM Policy
+            --> Defines permissions.
+            
+        2. Permission
+            --> Defines what an identity can do.
+
+        3. Identity-Based Policy
+            --> Attached to users, groups, or roles.
+
+        4. Managed Policy
+            --> Reusable policy.
+
+        5. AWS Managed Policy
+            --> Created and maintained by AWS.
+
+        6. Customer Managed Policy
+            --> Created and maintained in your AWS account.
+
+        7. Inline Policy
+            --> Embedded directly in one IAM identity.
+
+        8. Effect
+            --> Allow or Deny.
+
+        9. Action
+            --> AWS operation being controlled.
+
+        10. Resource
+            --> AWS resource affected by the permission.
+
+        11. Explicit Deny
+            --> Overrides an Allow.
+
+        12. Implicit Deny
+            --> Access is denied when no applicable Allow exists.
+
+        13. Least Privilege
+            --> Grant only the permissions actually required.
+
+
+    # Lecture Summary:
+        "IAM policies define what AWS identities and resources are allowed or denied
+        to do. Start with no access, grant only required permissions, understand the
+        basic JSON policy elements, and remember that an explicit Deny overrides an Allow."
