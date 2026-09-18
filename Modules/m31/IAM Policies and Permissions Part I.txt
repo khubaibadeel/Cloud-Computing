@@ -329,14 +329,11 @@
 
         Simple idea:
 
-            Identity Policy
-                --> Says what may be allowed
+            Identity Policy    --> Says what may be allowed
 
-            Permissions Boundary
-                --> Sets the maximum limit
+            Permissions Boundary    --> Sets the maximum limit
 
-            Effective Permissions
-                --> Permissions allowed by both
+            Effective Permissions    --> Permissions allowed by both
 
 
     # Quick Practical Example:
