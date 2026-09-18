@@ -355,44 +355,31 @@
 
 
     # Quick Summary:
-        1. IAM Policy
-            --> Defines permissions.
+        1. IAM Policy    --> Defines permissions.
 
-        2. Permission
-            --> Defines what an identity can do.
+        2. Permission    --> Defines what an identity can do.
 
-        3. Identity-Based Policy
-            --> Attached to users, groups, or roles.
+        3. Identity-Based Policy    --> Attached to users, groups, or roles.
 
-        4. Managed Policy
-            --> Reusable policy.
+        4. Managed Policy    --> Reusable policy.
 
-        5. AWS Managed Policy
-            --> Created and maintained by AWS.
+        5. AWS Managed Policy    --> Created and maintained by AWS.
 
-        6. Customer Managed Policy
-            --> Created and maintained in your AWS account.
+        6. Customer Managed Policy    --> Created and maintained in your AWS account.
 
-        7. Inline Policy
-            --> Embedded directly in one IAM identity.
+        7. Inline Policy    --> Embedded directly in one IAM identity.
 
-        8. Effect
-            --> Allow or Deny.
+        8. Effect    --> Allow or Deny.
 
-        9. Action
-            --> AWS operation being controlled.
+        9. Action    --> AWS operation being controlled.
 
-        10. Resource
-            --> AWS resource affected by the permission.
+        10. Resource    --> AWS resource affected by the permission.
 
-        11. Explicit Deny
-            --> Overrides an Allow.
+        11. Explicit Deny    --> Overrides an Allow.
 
-        12. Implicit Deny
-            --> Access is denied when no applicable Allow exists.
+        12. Implicit Deny    --> Access is denied when no applicable Allow exists.
 
-        13. Least Privilege
-            --> Grant only the permissions actually required.
+        13. Least Privilege    --> Grant only the permissions actually required.
 
 
     # Lecture Summary:
