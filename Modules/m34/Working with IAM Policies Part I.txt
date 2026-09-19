@@ -1,9 +1,4 @@
 # Working with IAM Policies Part I:
-    This practical lesson demonstrates how to work with IAM policies in the AWS
-    Management Console. It covers attaching AWS managed policies to users and
-    groups, creating custom IAM policies using the visual editor or JSON, and
-    enabling Multi-Factor Authentication (MFA) for IAM users.
-
 
     # IAM User Groups:
         IAM user groups are collections of IAM users.
