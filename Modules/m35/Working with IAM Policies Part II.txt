@@ -1,0 +1,589 @@
+# Working with IAM Policies Part II:
+    This practical lesson demonstrates how to test IAM permissions using the
+    IAM Policy Simulator. It also shows how to create and attach an IAM Role
+    to an EC2 instance so that the instance can access Amazon S3 through the
+    AWS CLI without storing permanent access keys.
+
+
+    # IAM Policy Simulator:
+        AWS provides the IAM Policy Simulator to test permissions before
+        testing them directly against AWS resources.
+
+        It can simulate permissions for:
+            - IAM Users
+            - IAM Groups
+            - IAM Roles
+
+        Benefit:
+            - Helps verify whether a policy allows or denies specific actions.
+            - Reduces trial-and-error testing on live AWS resources.
+
+
+    # Opening the IAM Policy Simulator:
+        In the IAM Policy Simulator:
+
+            1. Select:
+                - User
+                - Group
+                - Role
+
+            2. Select the AWS service.
+
+            3. Select one or more actions.
+
+            4. Click:
+                --> Run Simulation
+
+        Result:
+            - Allowed
+            - Denied
+
+
+    # Testing a Developer User:
+        Example:
+            User:
+                --> dev-user
+
+            Service:
+                --> Amazon S3
+
+            Action:
+                --> PutObject
+
+        Simulation Result:
+            --> Denied
+
+        Reason:
+            - The user does not have a policy that allows s3:PutObject.
+            - The simulator shows an implicit deny when no matching Allow exists.
+
+
+    # Implicit Deny:
+        AWS denies access by default.
+
+        If no policy explicitly allows an action:
+
+            No matching Allow
+                --> Implicit Deny
+
+        Example:
+            dev-user has only:
+                --> IAMUserChangePassword
+
+        Therefore:
+            - The user can change the password.
+            - The user cannot automatically perform S3 actions.
+
+
+    # Testing a Custom Policy:
+        Example:
+            User:
+                --> admin-user
+
+            Selected Policy:
+                --> List-Access-EC2-S3
+
+        First Test:
+            S3 Action:
+                --> PutObject
+
+            Result:
+                --> Denied
+
+        Why?
+            - The custom policy was created mainly for list/read-style access.
+            - PutObject was not allowed.
+
+
+    # Testing an Allowed Action:
+        With the same custom policy:
+
+            S3 Action:
+                --> ListBucket
+
+            Result:
+                --> Allowed
+
+        Meaning:
+            - The user can list the bucket.
+            - The user cannot upload objects unless PutObject is also allowed.
+
+
+    # Why the Policy Simulator is Useful:
+        Instead of:
+
+            1. Creating a policy.
+            2. Attaching it to a user.
+            3. Opening the target service.
+            4. Testing actions manually.
+            5. Repeating the process when permissions fail.
+
+        Better approach:
+            - Use the IAM Policy Simulator first.
+            - Test required actions one by one.
+            - Confirm the policy matches the intended use case.
+
+
+    # Policy Simulator Rule:
+        Allowed:
+            --> A matching policy statement permits the action.
+
+        Denied:
+            --> No matching Allow exists
+            OR
+            --> An explicit Deny applies.
+
+        Important:
+            - Explicit Deny always overrides Allow.
+
+
+    # Practical IAM Role Use Case:
+        The second part of the lesson uses this scenario:
+
+            EC2 Instance
+                --> Needs to access Amazon S3
+
+        Requirement:
+            - Use AWS CLI from the EC2 instance.
+            - Do not store long-term AWS access keys on the server.
+
+        Recommended Solution:
+            --> Use an IAM Role.
+
+
+    # Testing AWS CLI Before Attaching a Role:
+        Connect to the EC2 instance.
+
+        Example command:
+
+            aws s3 ls
+
+        If the instance has no AWS credentials:
+
+            Expected error:
+                Unable to locate credentials
+
+        Meaning:
+            - AWS CLI is installed.
+            - But the instance has no IAM credentials available.
+
+
+    # Why Not Configure Permanent Access Keys on EC2?
+        It is not a good practice to store permanent IAM user credentials
+        directly on an EC2 instance.
+
+        Avoid storing:
+            - Access Key ID
+            - Secret Access Key
+
+        Problems:
+            - Keys can be exposed.
+            - Keys can be copied from the server.
+            - Long-term credentials require rotation.
+            - Compromised keys may remain valid until disabled.
+
+        Better approach:
+            --> Attach an IAM Role to EC2.
+
+
+    # Creating an IAM Policy for S3 Access:
+        Before creating the role, create a policy that defines what the
+        EC2 instance should be allowed to do in S3.
+
+        Path:
+            IAM
+                --> Policies
+                --> Create policy
+
+
+    # Example S3 Policy Requirements:
+        The practical example requires actions such as:
+
+            - List buckets
+            - Read objects
+            - Upload objects
+            - Download objects
+            - Delete objects
+            - Work with selected bucket information
+
+        Example S3 actions can include:
+
+            - s3:ListBucket
+            - s3:ListAllMyBuckets
+            - s3:GetObject
+            - s3:GetObjectVersion
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetBucketLocation
+
+        Important:
+            - Add only the actions actually required.
+            - Avoid unnecessary permissions.
+
+
+    # Using Amazon Q to Help Create Policy JSON:
+        Amazon Q can be used to generate an initial IAM policy draft.
+
+        Example request:
+            "Create an IAM policy that allows required S3 list, read,
+            upload, download, and delete actions."
+
+        Workflow:
+            1. Ask Amazon Q.
+            2. Copy the generated JSON.
+            3. Open the IAM JSON editor.
+            4. Paste the policy.
+            5. Review every action.
+            6. Remove unnecessary permissions.
+            7. Continue to policy creation.
+
+        Important:
+            - AI-generated IAM policies must still be reviewed carefully.
+
+
+    # Creating the IAM Role:
+        After the S3 policy is created:
+
+        Path:
+            IAM
+                --> Roles
+                --> Create role
+
+        Trusted Entity:
+            --> AWS Service
+
+        Use Case:
+            --> EC2
+
+        This means:
+            - Amazon EC2 is allowed to assume the role.
+
+
+    # Attaching the Policy to the Role:
+        During role creation:
+
+            1. Select the custom S3 policy.
+            2. Continue to role details.
+            3. Enter a role name.
+
+        Example role name:
+            EC2-S3-Limited-Access
+
+        Role purpose:
+            - Allow an EC2 instance to call permitted S3 actions.
+
+
+    # Trust Policy vs Permissions Policy:
+        Trust Policy:
+            --> Defines who can assume the role.
+
+        In this example:
+            --> EC2 can assume the role.
+
+        Permissions Policy:
+            --> Defines what the role can do.
+
+        In this example:
+            --> Required Amazon S3 actions.
+
+
+    # Attaching the IAM Role to EC2:
+        Open:
+
+            EC2
+                --> Instances
+                --> Select Instance
+                --> Actions
+                --> Security
+                --> Modify IAM Role
+
+        Then:
+            - Select the IAM Role.
+            - Save the change.
+
+        Result:
+            - The EC2 instance receives temporary credentials for the role.
+
+
+    # Verifying the Attached IAM Role:
+        After attaching the role:
+
+            EC2
+                --> Select Instance
+                --> Security
+
+        Check:
+            IAM Role
+                --> Should show the attached role name.
+
+        You can open the role to review:
+            - Trust relationship
+            - Attached policies
+            - Permissions
+
+
+    # Network Requirement for AWS API Access:
+        The EC2 instance must have network connectivity to the required
+        AWS service endpoints.
+
+        For normal HTTPS API communication:
+
+            Outbound:
+                --> TCP 443 is commonly required.
+
+        Important:
+            - Inbound TCP 443 is NOT required merely for the EC2 instance
+              to call S3 or other AWS APIs.
+            - Inbound 443 is needed only if the EC2 instance itself must
+              receive HTTPS connections.
+
+        Network access may be provided through:
+            - Public Internet access
+            - NAT Gateway / NAT device
+            - VPC Endpoint, where supported
+
+
+    # Verifying the Role with AWS STS:
+        Run:
+
+            aws sts get-caller-identity
+
+        This command shows the AWS identity currently being used.
+
+        Output normally includes:
+            - Account
+            - UserId
+            - Arn
+
+        With an EC2 IAM Role:
+            - The ARN indicates an assumed role session.
+
+        This confirms:
+            --> The EC2 instance is using the attached IAM Role.
+
+
+    # Temporary Credentials on EC2:
+        When a role is attached to EC2:
+
+            - AWS provides temporary credentials automatically.
+            - AWS CLI and AWS SDKs can use them.
+            - No permanent access key needs to be stored manually.
+
+        These temporary credentials are rotated automatically by AWS.
+
+
+    # Listing S3 Buckets from EC2:
+        Command:
+
+            aws s3 ls
+
+        If the attached role has the required permission:
+
+            Result:
+                --> The accessible S3 buckets are listed.
+
+        If permission is missing:
+
+            Result:
+                --> AccessDenied or another authorization error.
+
+
+    # Creating a Test File on EC2:
+        Example:
+
+            touch index.txt
+
+        Edit the file:
+
+            nano index.txt
+
+        Example content:
+
+            Hello EC2 S3 IAM Role
+
+        View the file:
+
+            cat index.txt
+
+
+    # Uploading a File to S3:
+        AWS CLI command:
+
+            aws s3 cp index.txt s3://BUCKET-NAME/
+
+        Meaning:
+            - Copy index.txt from EC2 to the S3 bucket.
+
+        Required permission:
+            --> s3:PutObject
+
+        After upload:
+            - Refresh the S3 bucket.
+            - The object should appear.
+
+
+    # Downloading a File from S3:
+        Create a local directory:
+
+            mkdir my-new-folder
+
+        Move into it:
+
+            cd my-new-folder
+
+        Download:
+
+            aws s3 cp s3://BUCKET-NAME/index.txt .
+
+        Meaning:
+            "." means:
+                --> Download into the current directory.
+
+        Verify:
+
+            ls
+
+        Result:
+            --> index.txt should appear locally.
+
+
+    # Deleting a File from S3:
+        Command:
+
+            aws s3 rm s3://BUCKET-NAME/index.txt
+
+        Required permission:
+            --> s3:DeleteObject
+
+        After deletion:
+            - Refresh the bucket.
+            - The object should no longer appear.
+
+
+    # Useful AWS S3 CLI Commands:
+        1. List Buckets:
+
+            aws s3 ls
+
+        2. List Objects:
+
+            aws s3 ls s3://BUCKET-NAME/
+
+        3. Upload File:
+
+            aws s3 cp localfile.txt s3://BUCKET-NAME/
+
+        4. Download File:
+
+            aws s3 cp s3://BUCKET-NAME/file.txt .
+
+        5. Delete Object:
+
+            aws s3 rm s3://BUCKET-NAME/file.txt
+
+
+    # Using Command History:
+        In the Linux terminal:
+
+            Up Arrow
+                --> Shows previous commands.
+
+        Benefit:
+            - Reuse earlier commands.
+            - Edit only the required part.
+            - Saves time when testing similar S3 commands.
+
+
+    # Removing the IAM Role:
+        If the IAM Role is removed from the EC2 instance:
+
+            - The EC2 instance loses the permissions provided by that role.
+            - AWS CLI requests that depended on the role will fail after
+              the temporary credentials are no longer usable.
+
+        This demonstrates:
+            - Access is being provided through the role.
+            - Permanent access keys are not required.
+
+
+    # End-to-End Flow:
+        Complete practical flow:
+
+            1. Create or select an IAM policy.
+            2. Test permissions in IAM Policy Simulator.
+            3. Create an S3 access policy for EC2.
+            4. Create an IAM Role for EC2.
+            5. Attach the S3 policy to the role.
+            6. Attach the role to the EC2 instance.
+            7. Connect to EC2.
+            8. Run aws sts get-caller-identity.
+            9. Run aws s3 ls.
+            10. Upload a test file.
+            11. Download the file.
+            12. Delete the file.
+            13. Remove the role to demonstrate loss of access.
+
+
+    # Security Best Practices:
+        1. Use IAM Roles for AWS workloads whenever possible.
+
+        2. Avoid storing permanent access keys on EC2.
+
+        3. Follow least privilege.
+
+        4. Test permissions before production use.
+
+        5. Use the IAM Policy Simulator to validate policies.
+
+        6. Review AI-generated policy JSON before using it.
+
+        7. Limit policies to required actions and resources.
+
+        8. Use temporary credentials instead of long-term credentials.
+
+
+    # Quick Summary:
+        1. IAM Policy Simulator
+            --> Tests permissions before live use.
+
+        2. Implicit Deny
+            --> Happens when no matching Allow exists.
+
+        3. PutObject
+            --> Uploads an object to S3.
+
+        4. ListBucket
+            --> Allows listing objects in a bucket.
+
+        5. IAM Role
+            --> Provides temporary permissions to EC2.
+
+        6. EC2 Trust Relationship
+            --> Allows EC2 to assume the role.
+
+        7. aws sts get-caller-identity
+            --> Shows the identity currently being used.
+
+        8. aws s3 ls
+            --> Lists S3 buckets or objects.
+
+        9. aws s3 cp
+            --> Uploads or downloads files.
+
+        10. aws s3 rm
+            --> Deletes an S3 object.
+
+        11. Temporary Credentials
+            --> Are automatically provided and rotated for the role.
+
+        12. Best Practice
+            --> Use IAM Roles instead of storing long-term access keys on EC2.
+
+
+    # Lecture Summary:
+        "The IAM Policy Simulator helps verify whether specific AWS actions are
+        allowed or denied before testing them on live resources. IAM Roles allow
+        EC2 instances to securely access services such as Amazon S3 using temporary
+        credentials. By attaching a least-privilege policy to an EC2 role, the AWS
+        CLI can list, upload, download, and delete S3 objects without storing
+        permanent access keys on the server."
