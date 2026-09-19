@@ -1,0 +1,400 @@
+# Working with IAM Policies Part I:
+    This practical lesson demonstrates how to work with IAM policies in the AWS
+    Management Console. It covers attaching AWS managed policies to users and
+    groups, creating custom IAM policies using the visual editor or JSON, and
+    enabling Multi-Factor Authentication (MFA) for IAM users.
+
+
+    # IAM User Groups:
+        IAM user groups are collections of IAM users.
+
+        Groups make permission management easier because:
+            - Policies can be attached to a group.
+            - Users added to the group receive the group's permissions.
+            - The same permissions do not need to be assigned user by user.
+
+        Example groups:
+            - admin-group
+            - developer-group
+
+
+    # Attaching Policies to Groups:
+        A policy can be attached to an IAM user group.
+
+        Example:
+            admin-group
+                --> AdministratorAccess
+
+        Result:
+            - Every user inside admin-group receives the permissions
+              provided by AdministratorAccess.
+
+        Important:
+            - Review the policy before attaching it.
+            - Avoid giving administrative access unless it is genuinely required.
+
+
+    # AWS Managed Policies:
+        AWS Managed Policies are ready-made policies created and maintained by AWS.
+
+        Examples:
+            - AdministratorAccess
+            - ReadOnlyAccess
+            - AmazonS3ReadOnlyAccess
+            - AmazonEC2ReadOnlyAccess
+
+        Benefit:
+            - Quick to attach.
+            - Useful for common permission requirements.
+
+        Important:
+            - AWS managed policies can sometimes be broader than required.
+            - Always review what permissions a policy grants.
+
+
+    # AdministratorAccess Policy:
+        AdministratorAccess is an AWS managed policy.
+
+        It provides very broad access to AWS services and resources.
+
+        Simplified policy structure:
+
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": "*",
+                        "Resource": "*"
+                    }
+                ]
+            }
+
+        Meaning:
+            "Action": "*"
+                --> All actions.
+
+            "Resource": "*"
+                --> All resources.
+
+        Important:
+            - This is extremely powerful access.
+            - Use it only for trusted administrators who truly require it.
+
+
+    # Creating a Custom IAM Policy:
+        AWS allows you to create your own IAM policies.
+
+        Path:
+            IAM
+                --> Policies
+                --> Create policy
+
+        A custom policy can be created using:
+
+            1. Visual Editor
+            2. JSON Editor
+
+
+    # Visual Policy Editor:
+        The Visual Editor helps build permissions without manually writing all JSON.
+
+        You can select:
+
+            - AWS service
+            - Allowed actions
+            - Resources
+            - Conditions
+
+        Example:
+            Service:
+                --> Amazon S3
+
+            Actions:
+                --> List
+                --> Read
+
+            Resource:
+                --> All resources or selected resources
+
+        Benefit:
+            - Easier for beginners.
+            - Reduces JSON syntax mistakes.
+
+
+    # JSON Policy Editor:
+        The JSON Editor allows direct control of the policy document.
+
+        Basic structure:
+
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [],
+                        "Resource": "*"
+                    }
+                ]
+            }
+
+        Main elements:
+            - Version
+            - Statement
+            - Effect
+            - Action
+            - Resource
+
+
+    # Policy Version:
+        A common policy version is:
+
+            "2012-10-17"
+
+        This identifies the IAM policy language version.
+
+        Important:
+            - It is not the creation date of your policy.
+
+
+    # Creating EC2 and S3 List Permissions:
+        A custom policy can be created to allow limited access to EC2 and S3.
+
+        Example requirement:
+            "Allow EC2 and S3 list permissions only."
+
+        This is better than giving full administrative access when the user
+        only needs to view or list resources.
+
+
+    # Example Limited Policy Idea:
+        The policy can allow selected list and read actions.
+
+        EC2 examples:
+            - ec2:DescribeInstances
+            - ec2:DescribeImages
+            - ec2:DescribeVolumes
+
+        S3 examples:
+            - s3:ListAllMyBuckets
+            - s3:ListBucket
+            - s3:GetBucketLocation
+
+        Important:
+            - Use only the actions required for the task.
+            - Do not automatically use "*" for Action unless full access is required.
+
+
+    # Using Amazon Q to Assist with Policy Creation:
+        AWS console tools such as Amazon Q can help suggest IAM policy JSON.
+
+        Example request:
+            "I need an IAM policy JSON that allows EC2 and S3 list permissions only."
+
+        Useful approach:
+            1. Describe the exact access required.
+            2. Review the suggested JSON carefully.
+            3. Verify the actions and resources.
+            4. Do not accept generated permissions without review.
+
+        Important:
+            - AI-generated policy suggestions can still be too broad or incorrect.
+            - The administrator remains responsible for validating permissions.
+
+
+    # Review and Create:
+        After defining permissions:
+
+            Step 1:
+                Specify permissions.
+
+            Step 2:
+                Review and create.
+
+        During review:
+            - Enter a policy name.
+            - Add an optional description.
+            - Verify services and access levels.
+            - Review resources and conditions.
+
+        Example policy name:
+            List-Access-EC2-S3
+
+
+    # Policy Review Example:
+        Example services shown in the policy:
+
+            EC2
+                --> Limited: List
+
+            S3
+                --> List / Read permissions
+
+            Resource
+                --> All resources
+
+        Important:
+            - "All resources" may still be broader than necessary.
+            - Restrict resources when the service supports it and the use case allows it.
+
+
+    # After Creating the Policy:
+        When the custom policy is created successfully:
+
+            - It appears in IAM > Policies.
+            - It can be attached to:
+                - IAM users
+                - IAM user groups
+                - IAM roles
+
+        Example:
+            List-Access-EC2-S3
+                --> Can be attached to a developer group.
+
+
+    # Attaching a Custom Policy to a User:
+        Path:
+            IAM
+                --> Users
+                --> Select user
+                --> Add permissions
+
+        Then:
+            - Select the custom policy.
+            - Review the permissions.
+            - Attach the policy.
+
+        Result:
+            - The user receives the permissions defined by that policy.
+
+
+    # Attaching a Custom Policy to a Group:
+        Path:
+            IAM
+                --> User groups
+                --> Select group
+                --> Permissions
+                --> Add permissions
+
+        Benefit:
+            - Every user in the group receives the policy permissions.
+
+
+    # Least Privilege in Practice:
+        Least privilege means:
+
+            "Give only the permissions required for the task."
+
+        Example:
+            If a developer only needs to list EC2 instances and S3 buckets:
+
+        Better:
+            --> Give EC2 and S3 list/read permissions.
+
+        Avoid:
+            --> AdministratorAccess.
+
+        Why?
+            - Reduces accidental changes.
+            - Reduces security risk.
+            - Limits damage if credentials are compromised.
+
+
+    # Multi-Factor Authentication (MFA):
+        MFA adds an extra security step to IAM user sign-in.
+
+        Normal login:
+            Username + Password
+
+        With MFA:
+            Username + Password + Temporary MFA code
+
+        Benefit:
+            - A stolen password alone is not enough to sign in.
+
+
+    # Enabling MFA for an IAM User:
+        Typical path:
+
+            IAM
+                --> Users
+                --> Select IAM user
+                --> Security credentials
+                --> Multi-factor authentication (MFA)
+                --> Assign MFA device
+
+        Common MFA options can include:
+            - Authenticator application
+            - Hardware security device
+            - Other supported MFA methods
+
+
+    # Why MFA is Important:
+        MFA provides additional account protection.
+
+        It is especially important for:
+            - Administrator users
+            - Users with sensitive permissions
+            - Accounts that can change security settings
+
+        Best practice:
+            - Enable MFA for privileged IAM users.
+
+
+    # Practical Permission Workflow:
+        A good IAM workflow is:
+
+            1. Create users.
+            2. Organize users into groups.
+            3. Attach required policies to groups.
+            4. Use AWS managed policies when appropriate.
+            5. Create custom policies when managed policies are too broad.
+            6. Follow least privilege.
+            7. Enable MFA for important users.
+            8. Review permissions regularly.
+
+
+    # Quick Summary:
+        1. IAM User Group
+            --> Collection of IAM users.
+
+        2. AWS Managed Policy
+            --> Ready-made policy maintained by AWS.
+
+        3. AdministratorAccess
+            --> Very broad access to AWS services and resources.
+
+        4. Custom Policy
+            --> Policy created for specific permission requirements.
+
+        5. Visual Editor
+            --> Builds policies through the AWS interface.
+
+        6. JSON Editor
+            --> Allows direct editing of policy JSON.
+
+        7. Effect
+            --> Allow or Deny.
+
+        8. Action
+            --> Defines what can be performed.
+
+        9. Resource
+            --> Defines where the action applies.
+
+        10. Least Privilege
+            --> Give only required permissions.
+
+        11. MFA
+            --> Adds a second authentication factor.
+
+        12. Best Practice
+            --> Prefer limited, task-specific permissions over broad access.
+
+
+    # Lecture Summary:
+        "IAM policies can be attached to users, groups, and roles to control AWS
+        access. AWS managed policies provide ready-made permissions, while custom
+        policies allow more specific control through the Visual or JSON editor.
+        Follow least privilege, review every policy before attaching it, and use
+        MFA to improve IAM user security."
