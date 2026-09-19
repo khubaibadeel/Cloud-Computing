@@ -1,3 +1,5 @@
+
+
 # Building a Career in Cloud Computing - Part II:
     This topic explains how cloud-computing skills can be used for freelancing
     and project work on platforms such as Upwork and Fiverr.
