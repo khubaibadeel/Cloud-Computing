@@ -1,0 +1,24 @@
+Amazon S3 Fundamentals Part I.txt
+Amazon S3 Fundamentals Part II.txt
+S3 Buckets and Objects Management Part I.txt
+S3 Buckets and Objects Management Part II.txt
+S3 Buckets and Objects Management Part III.txt
+S3 Storage Classes Part I.txt
+S3 Storage Classes Part II.txt
+S3 Lifecycle Policies and Versioning Part I.txt
+S3 Lifecycle Policies and Versioning Part II.txt
+S3 Lifecycle Policies and Versioning Part III.txt
+S3 Security and Access Control Part I.txt
+S3 Security and Access Control Part II.txt
+S3 Bucket Creation and Configuration.txt
+S3 Static Website Hosting Part I.txt
+S3 Static Website Hosting Part II.txt
+Amazon EBS Volume Types Part I.txt
+Amazon EBS Volume Types Part II.txt
+EBS Volume Management.txt
+Amazon EFS Overview.txt
+EFS Console Lab.txt
+VPC Fundamentals Part I.txt
+VPC Fundamentals Part II.txt
+IP Addressing and CIDR Notation.txt
+Public and Private Subnets Part I.txt
