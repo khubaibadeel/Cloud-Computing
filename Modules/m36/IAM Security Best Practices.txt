@@ -1,0 +1,503 @@
+# IAM Security Best Practices:
+    This topic explains important IAM security best practices for protecting
+    AWS accounts, users, credentials, and resources.
+
+    The main goals are:
+        - Reduce unnecessary access.
+        - Protect powerful credentials.
+        - Use temporary access whenever possible.
+        - Monitor AWS activity.
+        - Follow the principle of least privilege.
+
+
+    # Best Practice 1 - Enable MFA:
+        MFA stands for Multi-Factor Authentication.
+
+        MFA adds an extra authentication step during sign-in.
+
+        Normal Sign-In:
+            Username + Password
+
+        With MFA:
+            Username + Password + One-Time Code
+
+        The one-time code may come from:
+            - Authenticator application
+            - Hardware security key
+            - Other supported MFA device
+
+        Result:
+            - A stolen password alone is not enough to access the account.
+
+        Best Practice:
+            - Enable MFA for the root user.
+            - Enable MFA for administrators.
+            - Enable MFA for users with console access.
+
+
+    # How MFA Works:
+        Step 1:
+            User enters username and password.
+
+        Step 2:
+            AWS asks for an MFA code.
+
+        Step 3:
+            User enters the temporary MFA code.
+
+        Step 4:
+            If both factors are valid:
+                --> Access is granted.
+
+
+    # Best Practice 2 - Apply Least Privilege:
+        Least privilege means:
+
+            "Grant only the permissions required to perform the task."
+
+        Do not give:
+            - More permissions than required.
+            - Extra permissions "just in case".
+            - Full administrative access when limited access is enough.
+
+
+    # Start with Minimum Access:
+        AWS follows a deny-by-default model.
+
+        Recommended approach:
+
+            1. Start with no access.
+            2. Identify the exact task.
+            3. Add only the required permissions.
+            4. Test the permissions.
+            5. Expand them only when genuinely necessary.
+
+
+    # Scope Permissions to Specific Resources:
+        Avoid broad permissions such as:
+
+            "Action": "*"
+            "Resource": "*"
+
+        Better approach:
+            - Limit actions.
+            - Limit resources.
+            - Use specific ARNs where possible.
+
+        Example:
+            User only needs to read objects from one S3 bucket.
+
+        Better Policy:
+            Action:
+                --> s3:GetObject
+
+            Resource:
+                --> arn:aws:s3:::my-app-data/*
+
+        Avoid:
+            --> Full S3 access to all buckets.
+
+
+    # Least Privilege Example:
+        Don't Do This:
+
+            {
+                "Effect": "Allow",
+                "Action": "*",
+                "Resource": "*"
+            }
+
+        Why?
+            - Very broad permissions.
+            - Large security risk.
+            - A compromised identity could affect many AWS resources.
+
+        Better:
+
+            {
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::my-app-data/*"
+            }
+
+        Result:
+            - User receives only the access required for the task.
+
+
+    # Best Practice 3 - Protect the Root Account:
+        The AWS root user has extremely powerful account-level access.
+
+        Therefore:
+            - Do not use the root account for daily work.
+            - Protect the root credentials carefully.
+            - Enable MFA on the root user.
+
+
+    # Use the Root User Only When Required:
+        Root access should normally be reserved for tasks that specifically
+        require the root user.
+
+        Examples can include:
+            - Certain account settings
+            - Critical account recovery tasks
+            - Some billing or account-level operations
+
+        Daily administration should normally use:
+            - IAM identities
+            - IAM Identity Center
+            - Appropriately privileged roles
+
+
+    # Why Protecting Root Matters:
+        If the root user is compromised:
+
+            --> The entire AWS account can be at serious risk.
+
+        Security steps:
+            1. Use a strong password.
+            2. Enable MFA.
+            3. Do not create root access keys unless absolutely necessary.
+            4. Do not use root for everyday tasks.
+            5. Store recovery information securely.
+
+
+    # Best Practice 4 - Manage Permissions Through Groups and Roles:
+        Groups help manage permissions for multiple IAM users.
+
+        Recommended pattern:
+
+            Policy
+                --> Group
+                --> Users
+
+        Example:
+
+            Developers Group
+                --> S3 Read Policy
+                --> EC2 Read Policy
+
+            Users:
+                - User A
+                - User B
+                - User C
+
+        Result:
+            - Users inherit the permissions attached to the group.
+
+
+    # Why Use Groups:
+        Benefits:
+            - Easier permission management.
+            - More consistent access.
+            - Easier auditing.
+            - Easier onboarding and offboarding.
+
+        Instead of:
+            - Repeating the same permissions for every user.
+
+        Better:
+            - Add users to a group with the required policies.
+
+
+    # Direct User Policies:
+        Directly attaching policies to individual IAM users is possible,
+        but group- or role-based permission management is usually easier
+        to maintain at scale.
+
+        Use direct user permissions only when there is a specific reason.
+
+        General Preference:
+            --> Groups or Roles for reusable permission management.
+
+
+    # Best Practice 5 - Access Key Hygiene:
+        Access keys provide programmatic AWS access.
+
+        They normally contain:
+            - Access Key ID
+            - Secret Access Key
+
+        Treat them like passwords.
+
+
+    # Never Store Access Keys in Unsafe Locations:
+        Do not store access keys in:
+
+            - Source code
+            - GitHub repositories
+            - Public Git repositories
+            - Shared documents
+            - Screenshots
+            - Unprotected environment files
+            - Chat messages
+            - Public configuration files
+
+        Why?
+            - Exposed access keys may be discovered and abused quickly.
+
+
+    # Prefer Roles Instead of Long-Term Access Keys:
+        Whenever possible:
+
+            Use:
+                --> IAM Roles
+
+            Instead of:
+                --> Long-term access keys
+
+        Roles provide:
+            - Temporary credentials
+            - Automatic credential rotation
+            - Reduced secret-management burden
+            - Better security for AWS workloads
+
+
+    # Review Access Keys Regularly:
+        Check:
+            - When the key was created.
+            - When it was last used.
+            - Which user owns it.
+            - Whether the key is still required.
+
+        If a key is unused:
+            --> Deactivate it.
+
+        If it is no longer needed:
+            --> Delete it.
+
+
+    # Access Key Rotation:
+        Some training material recommends:
+
+            --> Rotate access keys every 90 days.
+
+        More important modern practice:
+            - Avoid long-term access keys whenever possible.
+            - Rotate them according to your organization's security policy.
+            - Rotate immediately if compromise is suspected.
+            - Replace old keys safely before deleting them.
+
+        Best Security Choice:
+            --> Prefer temporary credentials from IAM Roles.
+
+
+    # Best Practice 6 - Enable CloudTrail:
+        AWS CloudTrail records account activity and API events.
+
+        It helps answer questions such as:
+            - Who performed an action?
+            - What action was performed?
+            - When was it performed?
+            - Which AWS resource was affected?
+            - Which IP address made the request?
+
+
+    # Why CloudTrail is Important:
+        CloudTrail helps with:
+
+            - Security monitoring
+            - Troubleshooting
+            - Compliance
+            - Incident investigation
+            - Auditing
+
+        Best Practice:
+            - Enable appropriate CloudTrail logging.
+            - Protect CloudTrail logs from unauthorized modification.
+            - Monitor important security events.
+
+
+    # Best Practice 7 - Use IAM Roles for AWS Services:
+        AWS services such as EC2 and Lambda often need permission to access
+        other AWS services.
+
+        Do not hardcode permanent access keys into:
+            - EC2 applications
+            - Lambda code
+            - Scripts
+            - Containers
+            - Server configuration files
+
+
+    # Don't Do This:
+        Application on EC2
+            --> Hardcoded Access Key
+            --> Secret Access Key
+
+        Risks:
+            - Credentials may be exposed in code.
+            - Credentials may appear in files or backups.
+            - Keys are difficult to rotate.
+            - Compromise can provide long-term access.
+
+
+    # Do This Instead:
+        EC2 / Lambda / AWS Service
+            --> IAM Role
+            --> Temporary Credentials
+
+        Benefits:
+            - Temporary credentials.
+            - Credentials are automatically managed.
+            - No long-term secret stored on the server.
+            - Easier credential rotation.
+            - Better least-privilege design.
+
+
+    # Example - EC2 Accessing S3:
+        Requirement:
+            EC2 application needs to read files from S3.
+
+        Bad Approach:
+            - Create IAM user access keys.
+            - Store them on EC2.
+
+        Better Approach:
+            1. Create an IAM Role.
+            2. Allow EC2 to assume the role.
+            3. Attach S3 read permission.
+            4. Attach the role to EC2.
+            5. EC2 receives temporary credentials automatically.
+
+
+    # Regular Access Reviews:
+        Permissions should not remain unchanged forever.
+
+        Review regularly:
+
+            - IAM users
+            - Groups
+            - Roles
+            - Policies
+            - Access keys
+            - Last activity
+            - Unused permissions
+
+        Questions to Ask:
+            - Does this user still need access?
+            - Does this role still need this permission?
+            - Is this access key still being used?
+            - Can the policy be made more restrictive?
+
+
+    # Remove Unused Access:
+        If permissions are no longer required:
+
+            --> Remove them.
+
+        If a user no longer needs AWS access:
+
+            --> Disable or delete the identity according to company policy.
+
+        If an access key is unused:
+
+            --> Deactivate or delete it.
+
+        Goal:
+            - Reduce unnecessary attack surface.
+
+
+    # IAM Credential Report:
+        IAM provides a credential report for reviewing user credential status.
+
+        It can help identify:
+
+            - Password status
+            - MFA status
+            - Access key status
+            - Access key age
+            - Last usage information
+
+        Useful for:
+            - Auditing
+            - Security reviews
+            - Finding old credentials
+
+
+    # Use IAM Access Analyzer:
+        IAM Access Analyzer can help identify resource access and
+        permissions that may be broader than expected.
+
+        It is useful for:
+            - Reviewing external access.
+            - Analyzing permissions.
+            - Improving least-privilege policies.
+
+
+    # The 7 Core Rules:
+        1. Enable MFA
+            --> Especially for root and privileged users.
+
+        2. Use Least Privilege
+            --> Give exactly the permissions required.
+
+        3. Protect the Root Account
+            --> Do not use root for daily work.
+
+        4. Use Groups and Roles
+            --> Manage permissions consistently.
+
+        5. Protect Access Keys
+            --> Avoid hardcoding and remove unused keys.
+
+        6. Enable CloudTrail
+            --> Monitor and audit AWS activity.
+
+        7. Use Roles for AWS Services
+            --> Prefer temporary credentials over long-term keys.
+
+
+    # Practical Security Checklist:
+        1. Root account has MFA.
+        2. Administrators have MFA.
+        3. Root user is not used for daily work.
+        4. Users have only required permissions.
+        5. Broad wildcard policies are reviewed.
+        6. IAM users are organized using groups where appropriate.
+        7. AWS workloads use IAM Roles.
+        8. Long-term access keys are minimized.
+        9. Unused access keys are disabled or deleted.
+        10. Permissions are reviewed regularly.
+        11. CloudTrail is enabled and monitored.
+        12. Credential reports are reviewed.
+        13. External and unused access is analyzed.
+
+
+    # Quick Summary:
+        1. MFA
+            --> Adds an additional authentication factor.
+
+        2. Least Privilege
+            --> Give only required permissions.
+
+        3. Root User
+            --> Protect carefully and avoid for daily tasks.
+
+        4. Groups
+            --> Simplify permission management for IAM users.
+
+        5. Access Keys
+            --> Treat like passwords and avoid unnecessary long-term keys.
+
+        6. CloudTrail
+            --> Records AWS account and API activity.
+
+        7. IAM Roles
+            --> Provide temporary credentials to AWS services and workloads.
+
+        8. Access Reviews
+            --> Remove unused users, permissions, and credentials.
+
+        9. Credential Report
+            --> Helps audit IAM user credential status.
+
+        10. Best Overall Principle
+            --> Minimize permanent credentials and unnecessary permissions.
+
+
+    # Lecture Summary:
+        "Secure IAM by enabling MFA, following least privilege, protecting the root
+        account, managing users through reusable permission structures, minimizing
+        long-term access keys, monitoring activity with CloudTrail, and using IAM
+        Roles for AWS services. Regular access reviews help remove unnecessary
+        permissions and reduce security risk."
