@@ -1,10 +1,6 @@
+
+
 # Working with IAM Policies Part II:
-    This practical lesson demonstrates how to test IAM permissions using the
-    IAM Policy Simulator. It also shows how to create and attach an IAM Role
-    to an EC2 instance so that the instance can access Amazon S3 through the
-    AWS CLI without storing permanent access keys.
-
-
     # IAM Policy Simulator:
         AWS provides the IAM Policy Simulator to test permissions before
         testing them directly against AWS resources.
