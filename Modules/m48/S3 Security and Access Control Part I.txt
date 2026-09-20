@@ -1,2 +1,197 @@
 
 
+# S3 Security and Access Control Part I:
+    This topic explains how IAM policies, S3 bucket policies, and ACLs control
+    access to S3 resources.
+
+
+    # S3 Security Model:
+        S3 access commonly uses two policy layers:
+
+        1. Identity-Based Policies
+            - IAM policies attached to users, groups, or roles.
+            - Answer:
+                "What can this identity do?"
+            - Permissions travel with the identity.
+
+        2. Resource-Based Policies
+            - Bucket policies attached directly to an S3 bucket.
+            - Answer:
+                "Who can access this resource?"
+            - Useful for public access, cross-account access, and conditions.
+
+
+    # Bucket Policy Structure:
+        A bucket policy is a JSON document.
+
+        Common elements:
+            - Effect
+            - Principal
+            - Action
+            - Resource
+            - Condition
+
+        Principal:
+            --> Defines who the statement applies to.
+
+        Examples:
+            "*" 
+                --> Everyone / public.
+
+            IAM user or role ARN
+                --> Specific AWS identity.
+
+            AWS service principal
+                --> Specific AWS service.
+
+
+    # Resource ARN Formats:
+        Bucket-level resource:
+            arn:aws:s3:::bucket-name
+
+        Object-level resource:
+            arn:aws:s3:::bucket-name/*
+
+        Important:
+            - Use /* when the permission applies to objects inside the bucket.
+
+
+    # Pattern 1: Public Read for a Static Website:
+        Example purpose:
+            - Allow everyone to download objects from a website bucket.
+
+        Policy idea:
+            Principal:
+                "*"
+
+            Action:
+                s3:GetObject
+
+            Resource:
+                arn:aws:s3:::my-website-bucket/*
+
+        Meaning:
+            - Everyone can read objects in the bucket.
+
+        Also required:
+            - Relevant Block Public Access settings must allow the public policy.
+
+        Use only for intentionally public content.
+
+
+    # Pattern 2: Cross-Account Access:
+        A bucket policy can allow an IAM role from another AWS account.
+
+        Example actions:
+            - s3:GetObject
+            - s3:ListBucket
+
+        Why two resources are needed:
+            s3:ListBucket
+                --> Uses the bucket ARN.
+
+            s3:GetObject
+                --> Uses the object ARN with /*.
+
+        Important:
+            - For cross-account access, the requesting identity must also
+              have permission to perform the action.
+
+
+    # Pattern 3: Enforce HTTPS:
+        A bucket policy can explicitly deny requests that do not use HTTPS.
+
+        Condition:
+            aws:SecureTransport = false
+
+        Result:
+            --> Deny the request.
+
+        Why use Deny?
+            - Explicit Deny overrides Allow.
+
+        Best use:
+            - Sensitive or customer-data buckets.
+
+
+    # Access Evaluation Order:
+        Simplified decision flow:
+
+            1. Explicit Deny?
+                --> Deny.
+
+            2. Block Public Access prevents the request?
+                --> Deny.
+
+            3. Explicit Allow from IAM or bucket policy?
+                --> Allow.
+
+            4. No explicit Allow?
+                --> Implicit Deny.
+
+
+    # IAM Policy vs Bucket Policy:
+        Use IAM Policy when:
+            - Managing your own account's users and roles.
+            - A user needs access to multiple AWS services.
+            - You want standard internal permission management.
+
+        Use Bucket Policy when:
+            - Granting access to another AWS account.
+            - Intentionally granting public access.
+            - Enforcing conditions on all bucket access.
+            - Keeping bucket-specific rules in one place.
+
+
+    # S3 ACLs:
+        ACL stands for Access Control List.
+
+        ACLs are a legacy access-control method.
+
+        Why avoid ACLs for new projects:
+            - Older than bucket policies.
+            - Can interact in complex ways with IAM and bucket policies.
+            - Harder to audit.
+            - Can create confusing edge cases.
+
+        Modern default:
+            - ACLs disabled.
+            - Object Ownership:
+                Bucket owner enforced.
+
+        Recommendation:
+            - Use IAM policies and bucket policies for new projects.
+
+
+    # Quick Summary:
+        1. IAM Policy
+            --> Identity-based permissions.
+
+        2. Bucket Policy
+            --> Resource-based permissions attached to the bucket.
+
+        3. Principal
+            --> Who the policy applies to.
+
+        4. Public Read
+            --> Usually uses Principal "*" and s3:GetObject.
+
+        5. Cross-Account Access
+            --> Can be granted with a bucket policy.
+
+        6. HTTPS Enforcement
+            --> Use explicit Deny when SecureTransport is false.
+
+        7. Explicit Deny
+            --> Overrides Allow.
+
+        8. ACLs
+            --> Legacy; avoid for new projects.
+
+
+    # Lecture Summary:
+        "S3 access is controlled mainly through IAM policies and bucket policies.
+        IAM policies define what identities can do, while bucket policies define
+        who can access a specific bucket. Bucket policies are useful for public,
+        cross-account, and conditional access. ACLs are legacy and IAM plus bucket
+        policies are preferred for modern S3 security."
