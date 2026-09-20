@@ -1,2 +1,211 @@
 
 
+# VPC Fundamentals Part I:
+    This topic introduces Amazon VPC as a logically isolated network inside AWS
+    and explains the difference between default and custom VPCs.
+
+
+    # What is a VPC?
+        VPC stands for Virtual Private Cloud.
+
+        It is:
+            --> Your own isolated network inside AWS.
+
+        Key ideas:
+            - Resources receive private IP addresses from the VPC.
+            - AWS customers are isolated from each other by default.
+            - You control the network boundaries and traffic flow.
+
+
+    # VPC Scope:
+        A VPC is regional.
+
+        Hierarchy:
+
+            Region
+                --> VPC
+                    --> Availability Zones
+                        --> Subnets
+                            --> EC2 instances
+
+        Important:
+            - A VPC can span multiple Availability Zones in one Region.
+            - A subnet belongs to only one Availability Zone.
+
+
+    # Example Hierarchy:
+        Region:
+            ap-south-1
+
+        VPC:
+            10.0.0.0/16
+
+        Availability Zones:
+            ap-south-1a
+            ap-south-1b
+            ap-south-1c
+
+        Subnet:
+            --> Exists inside one AZ.
+
+        EC2:
+            --> Receives an IP address from the subnet.
+
+
+    # Core VPC Components:
+        CIDR Block:
+            - Defines the IP address range for the VPC.
+
+        Route Tables:
+            - Control where network traffic is sent.
+
+        NAT Gateway:
+            - Provides outbound internet access for private resources.
+
+        Network ACLs:
+            - Stateless firewall at the subnet level.
+
+        Subnets:
+            - Subdivisions of the VPC tied to specific Availability Zones.
+
+        Internet Gateway:
+            - Connects the VPC to the public internet.
+
+        Security Groups:
+            - Stateful firewall at the instance level.
+
+
+    # Default VPC:
+        AWS provides a default VPC in each Region.
+
+        Example default CIDR:
+            172.31.0.0/16
+
+        Default VPC normally includes:
+            - Public subnets.
+            - An Internet Gateway.
+            - Internet access for instances when configured appropriately.
+
+        Best suited for:
+            - Learning.
+            - Quick tests.
+            - Simple experiments.
+
+
+    # Default VPC vs Custom VPC:
+        Default VPC:
+            - Created automatically by AWS.
+            - CIDR: 172.31.0.0/16.
+            - Subnets are public by default.
+            - Designed for quick usage.
+            - Less purpose-built for production.
+
+        Custom VPC:
+            - Created by you through Console, CLI, or IaC.
+            - You choose the CIDR block.
+            - You design public and private subnets.
+            - Internet access is limited to the resources that need it.
+            - Better suited for production and professional workloads.
+
+
+    # Why Production Uses Custom VPCs:
+        Custom VPCs allow purpose-built network tiers.
+
+        Example design:
+
+            Public Subnet:
+                --> Load Balancer
+
+            Private Subnet:
+                --> Application Servers
+
+            Private Subnet:
+                --> Databases
+
+        Main idea:
+            - Internet traffic reaches only the public tier.
+            - Application and database layers stay private.
+
+
+    # VPC Limits: Key Facts:
+        Default limits shown:
+
+            VPCs per Region per account:
+                --> 5
+
+            Internet Gateways per VPC:
+                --> 1
+
+            Subnets per VPC:
+                --> 200
+
+            Route Tables per VPC:
+                --> 200
+
+            Reserved IPs per subnet:
+                --> 5
+
+        Reserved IP behavior:
+            - AWS reserves the first 4 IP addresses.
+            - AWS also reserves the last IP address.
+
+
+    # CIDR Planning:
+        The primary VPC CIDR block cannot simply be changed later.
+
+        Important:
+            - Plan the IP range carefully.
+            - Secondary CIDR blocks can be added if needed.
+
+
+    # Simple Analogy:
+        AWS:
+            --> Owns the building.
+
+        Your VPC:
+            --> Your private office floor.
+
+        Inside the VPC:
+            - You decide the subnets.
+            - You decide the routes.
+            - You decide which resources can communicate.
+            - You decide which resources can access the internet.
+
+
+    # Quick Summary:
+        1. VPC
+            --> Isolated network inside AWS.
+
+        2. Regional Scope
+            --> A VPC spans Availability Zones within one Region.
+
+        3. Subnet
+            --> Belongs to one Availability Zone.
+
+        4. CIDR
+            --> Defines the VPC IP range.
+
+        5. Internet Gateway
+            --> Connects public resources to the internet.
+
+        6. NAT Gateway
+            --> Gives private resources outbound internet access.
+
+        7. Security Group
+            --> Stateful instance-level firewall.
+
+        8. Network ACL
+            --> Stateless subnet-level firewall.
+
+        9. Default VPC
+            --> Good for learning and quick tests.
+
+        10. Custom VPC
+            --> Better for production and multi-tier architectures.
+
+
+    # Lecture Summary:
+        "Amazon VPC provides an isolated virtual network inside AWS. A VPC is regional,
+        can span multiple Availability Zones, and contains subnets, route tables,
+        gateways, security groups, and network ACLs. Default VPCs are convenient for
+        learning, while custom VPCs provide better control for production workloads."
