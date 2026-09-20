@@ -1,0 +1,159 @@
+# S3 Lifecycle Policies and Versioning Part I:
+    This topic explains how S3 Lifecycle Policies automate object management
+    over time using transition and expiration rules.
+
+
+    # Why Lifecycle Policies are Needed:
+        Manual movement and deletion do not scale.
+
+        Common problems:
+            - Old log files remain in S3 Standard.
+            - Completed project files are never accessed again.
+            - Test data is not deleted.
+            - Incomplete multipart uploads keep consuming storage.
+
+        Lifecycle Policies automate these tasks.
+
+
+    # Two Types of Lifecycle Actions:
+        1. Transition Action
+            - Moves objects to a cheaper storage class after a specified number of days.
+
+            Example:
+                Standard
+                    --> Standard-IA
+
+        2. Expiration Action
+            - Permanently deletes objects after a specified age.
+
+            Example:
+                Delete after 365 days.
+
+
+    # Transition Rules:
+        Lifecycle rules can chain multiple storage classes.
+
+        Example lifecycle:
+
+            Day 0
+                --> S3 Standard
+
+            Day 30
+                --> Standard-IA
+
+            Day 90
+                --> Glacier Flexible Retrieval
+
+            Day 365
+                --> Deep Archive
+
+            Day 1095
+                --> Expire / Delete
+
+        Important:
+            - Lifecycle transitions move data toward lower-cost classes.
+            - Lifecycle rules do not automatically restore Glacier data back to Standard.
+
+        Minimum transition timing shown:
+            - 30 days to Standard-IA.
+            - 90 days to Glacier classes.
+
+
+    # Expiration Rules:
+        Expiration rules automatically delete objects after a defined age.
+
+        Example use cases:
+
+            Application logs
+                --> Delete after 90 days.
+
+            Test / staging data
+                --> Delete after 7 days.
+
+            Compliance data
+                --> Delete when retention ends.
+
+            Temporary processing files
+                --> Delete after 1 day.
+
+        Benefit:
+            - Prevents unnecessary storage growth.
+
+
+    # Cost Stabilization Example:
+        Example shown:
+            1 GB of logs per day.
+
+        With 90-day expiration:
+            --> About 90 GB retained.
+
+        Without expiration:
+            --> About 365 GB retained after one year.
+
+        Main idea:
+            - Expiration rules can control long-term storage cost.
+
+
+    # Incomplete Multipart Uploads:
+        A multipart upload may start but never finish.
+
+        Causes can include:
+            - Application crash.
+            - Timeout.
+            - Network failure.
+
+        Result:
+            - Uploaded parts remain stored in S3.
+            - The completed object does not appear.
+            - Storage cost can continue increasing.
+
+        Lifecycle fix:
+            --> Abort incomplete multipart uploads after N days.
+
+
+    # Practical Lifecycle Gotchas:
+        1. Lifecycle Processing is not immediate
+            - Rules run periodically.
+            - Expect up to about a 24-hour delay after eligibility.
+
+        2. Minimum days are enforced
+            - Example:
+                30 days to IA classes.
+                90 days to Glacier classes.
+
+        3. Object creation date matters
+            - Existing older objects can become eligible soon after a rule is created.
+
+        4. Tags allow precise rules
+            - Different rules can target different object types using tags.
+
+        5. No upgrade path
+            - Lifecycle does not move archived data back to Standard automatically.
+
+
+    # Quick Summary:
+        1. Transition Action
+            --> Moves objects to cheaper storage classes.
+
+        2. Expiration Action
+            --> Deletes objects after a defined age.
+
+        3. Lifecycle Chain
+            --> Can move objects through multiple storage classes over time.
+
+        4. Incomplete Multipart Uploads
+            --> Can be automatically aborted after N days.
+
+        5. Tags
+            --> Help apply different lifecycle rules to different objects.
+
+        6. Lifecycle Timing
+            --> Rules are not real-time and minimum transition days apply.
+
+
+    # Lecture Summary:
+        "S3 Lifecycle Policies automate storage management by transitioning objects
+        to lower-cost storage classes and deleting data when it is no longer needed.
+        They also help clean up incomplete multipart uploads and can target specific
+        objects using tags. Lifecycle rules reduce manual work and help control
+        long-term S3 storage cost."
