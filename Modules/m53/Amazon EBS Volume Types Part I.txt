@@ -1,2 +1,242 @@
 
 
+# Amazon EBS Volume Types Part I:
+    This topic introduces Amazon EBS as persistent block storage for EC2 instances
+    and compares General Purpose SSD and Provisioned IOPS SSD volume types.
+
+
+    # What is Amazon EBS?
+        EBS stands for Elastic Block Store.
+
+        EBS provides block storage for EC2 instances.
+
+        Think of it like:
+            --> A hard drive attached to an EC2 instance.
+
+        Key points:
+            - AZ-specific.
+            - Can attach only to instances in the same Availability Zone.
+            - Persistent across instance restarts.
+            - Supports snapshots.
+            - Supports encryption using AWS KMS.
+
+
+    # EBS Snapshots:
+        EBS snapshots are point-in-time backups.
+
+        Key point:
+            - Snapshots are stored in Amazon S3.
+
+        Benefit:
+            - Useful for backup and recovery.
+
+
+    # S3 vs EBS:
+        Amazon S3:
+            - Object storage.
+            - Used for files, documents, backups, and media.
+            - Accessed through HTTP.
+            - No EC2 attachment required.
+
+        Amazon EBS:
+            - Block storage.
+            - Commonly used for OS disks and database disks.
+            - Mounted directly to EC2.
+            - AZ-specific.
+
+        Simple analogy:
+            S3
+                --> Shared filing cabinet.
+
+            EBS
+                --> Hard drive inside a PC.
+
+
+    # EBS Volume Categories:
+        Two main categories shown:
+
+        1. SSD-Backed
+            - Optimized for random I/O.
+            - Good for small reads/writes spread across the disk.
+            - Measured mainly in IOPS.
+
+            Common use cases:
+                - Operating system disks
+                - Databases
+                - Transaction processing
+
+        2. HDD-Backed
+            - Optimized for sequential I/O.
+            - Good for large continuous data streams.
+            - Measured mainly in throughput (MB/s).
+
+            Common use cases:
+                - Big data
+                - Log storage
+                - Cold archives
+
+
+    # gp2 - General Purpose SSD:
+        gp2 is the previous generation General Purpose SSD.
+
+        Key points:
+            - 3 IOPS per GB.
+            - Can burst up to 3,000 IOPS.
+            - Maximum 16,000 IOPS.
+            - Performance is tied to volume size.
+
+        Examples:
+            100 GB
+                --> 300 IOPS
+
+            500 GB
+                --> 1,500 IOPS
+
+            5,333 GB
+                --> About 16,000 IOPS
+
+        Limitation:
+            - To get more IOPS, you may need to buy more storage
+              even if you do not need the extra capacity.
+
+
+    # gp3 - General Purpose SSD:
+        gp3 is the current default General Purpose SSD.
+
+        Baseline:
+            - 3,000 IOPS.
+            - 125 MB/s throughput.
+
+        Maximum:
+            - Up to 16,000 IOPS.
+            - Up to 1,000 MB/s throughput.
+
+        Key advantage:
+            - Performance is independent of volume size.
+
+        Cost:
+            - About 20% cheaper per GB than gp2.
+
+        Elastic Volumes:
+            - gp2 can be changed to gp3 without downtime.
+
+
+    # io1 - Provisioned IOPS SSD:
+        io1 is the previous generation Provisioned IOPS SSD.
+
+        Key points:
+            - Up to 64,000 IOPS.
+            - Up to 1,000 MB/s throughput.
+            - 50:1 maximum IOPS-to-GB ratio.
+            - Exact IOPS are provisioned and paid for.
+            - No burst/drain behavior.
+
+        Example:
+            64,000 IOPS requires at least:
+                --> 1,280 GB
+
+        Durability:
+            --> 99.99%
+
+        Multi-Attach:
+            --> Up to 16 EC2 instances in the same AZ.
+
+
+    # io2 - Provisioned IOPS SSD:
+        io2 is the current-generation replacement for io1.
+
+        Key points:
+            - 500:1 IOPS-to-GB ratio.
+            - 99.999% durability.
+            - Up to 64,000 IOPS.
+            - Up to 1,000 MB/s throughput.
+
+
+    # io2 Block Express:
+        io2 Block Express provides very high performance.
+
+        Key points:
+            - Dedicated hardware.
+            - Sub-millisecond latency.
+            - Up to 256,000 IOPS.
+            - Up to 4,000 MB/s throughput.
+            - Multi-Attach to up to 16 instances in the same AZ.
+
+        Use cases:
+            - SAP HANA
+            - Oracle
+            - SQL Server
+            - MongoDB clusters
+
+
+    # SSD Volume Type Comparison:
+        gp2:
+            - Max IOPS: 16,000
+            - Max throughput: 250 MB/s
+            - IOPS tied to volume size
+            - Previous generation
+
+        gp3:
+            - Max IOPS: 16,000
+            - Max throughput: 1,000 MB/s
+            - IOPS independent of volume size
+            - Current default
+
+        io1:
+            - Max IOPS: 64,000
+            - Max throughput: 1,000 MB/s
+            - 50:1 IOPS-to-GB ratio
+            - Previous generation
+
+        io2 Block Express:
+            - Max IOPS: 256,000
+            - Max throughput: 4,000 MB/s
+            - 500:1 IOPS-to-GB ratio
+            - Current generation
+
+
+    # Simple Selection Guide:
+        General-purpose workloads:
+            --> gp3
+
+        Older gp2 workloads:
+            --> Consider moving to gp3
+
+        Workloads needing more than 16,000 IOPS:
+            --> Consider io2
+
+        Extremely high-performance database workloads:
+            --> io2 Block Express
+
+
+    # Quick Summary:
+        1. EBS
+            --> Persistent block storage for EC2.
+
+        2. SSD-Backed
+            --> Best for random I/O and IOPS-heavy workloads.
+
+        3. HDD-Backed
+            --> Best for sequential throughput workloads.
+
+        4. gp2
+            --> Previous generation, IOPS tied to volume size.
+
+        5. gp3
+            --> Current default, independent IOPS and throughput.
+
+        6. io1
+            --> Previous Provisioned IOPS SSD.
+
+        7. io2
+            --> Current Provisioned IOPS SSD.
+
+        8. io2 Block Express
+            --> Highest-performance SSD option shown.
+
+
+    # Lecture Summary:
+        "Amazon EBS provides persistent block storage for EC2 instances. gp3 is the
+        current default General Purpose SSD and separates performance from volume size.
+        io1 and io2 are designed for provisioned IOPS workloads, while io2 Block Express
+        provides the highest performance for demanding database and enterprise workloads."
