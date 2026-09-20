@@ -1,2 +1,160 @@
 
 
+# Public and Private Subnets Part I:
+    This topic explains the difference between public and private subnets,
+    how route tables determine subnet behavior, and how internet access is
+    designed for production VPCs.
+
+    # Public vs Private Subnet:
+        A subnet becomes public or private based mainly on its route table.
+
+        Public Subnet:
+            - Route table contains:
+                0.0.0.0/0 --> Internet Gateway
+            - Result:
+                Subnet has a route to the internet.
+
+        Private Subnet:
+            - Route table does NOT contain a route to an Internet Gateway.
+            - Result:
+                Direct internet access is not available.
+
+        Key concept:
+            Public/private is a routing decision, not just a console label.
+
+    # Route Tables:
+        Every route table has a local route.
+
+        Example:
+            10.0.0.0/16 --> local
+
+        Meaning:
+            VPC-internal traffic stays inside the VPC.
+
+        Public route table:
+            10.0.0.0/16 --> local
+            0.0.0.0/0   --> Internet Gateway
+
+        Private route table:
+            10.0.0.0/16 --> local
+            No Internet Gateway route.
+
+    # Three Requirements for Internet Reachability:
+        For an EC2 instance to be reachable from the internet, it needs all three:
+
+        1. Public subnet
+            - Route table has 0.0.0.0/0 --> Internet Gateway.
+
+        2. Public IP
+            - Public IPv4 or Elastic IP.
+
+        3. Security Group
+            - Inbound rule allows the required traffic.
+
+        Missing any one of these means the instance is not reachable from the internet.
+
+    # Auto-Assign Public IPv4:
+        Controls whether new instances automatically receive public IPv4 addresses.
+
+        Public subnets:
+            --> Enable auto-assign public IPv4.
+
+        Private subnets:
+            --> Disable auto-assign public IPv4.
+
+        Path:
+            VPC Console
+                --> Subnets
+                --> Select subnet
+                --> Actions
+                --> Edit subnet settings
+
+        Important:
+            - Only affects instances launched after the setting change.
+            - Existing instances are unaffected.
+
+    # Private Subnet Outbound Internet:
+        Private instances may still need internet access for updates or downloads.
+
+        Flow:
+            Private EC2
+                --> NAT Gateway
+                --> Internet Gateway
+                --> Internet
+
+        Private route table:
+            0.0.0.0/0 --> NAT Gateway
+
+        Important:
+            - Internet hosts cannot initiate connections directly to private instances.
+            - Return traffic for outbound requests is allowed.
+
+    # Multi-AZ Production Design:
+        Production VPCs commonly span at least two Availability Zones.
+
+        Example:
+
+            AZ-a:
+                public-a
+                private-app-a
+                private-db-a
+
+            AZ-b:
+                public-b
+                private-app-b
+                private-db-b
+
+        Benefit:
+            One AZ can fail without taking down the complete application.
+
+    # Route Tables per AZ:
+        Public subnets can share one route table.
+
+        Private subnets should use separate route tables per AZ.
+
+        Example:
+
+            rtb-private-a:
+                10.0.0.0/16 --> local
+                0.0.0.0/0   --> nat-gw-a
+
+            rtb-private-b:
+                10.0.0.0/16 --> local
+                0.0.0.0/0   --> nat-gw-b
+
+        Why:
+            - Keeps each private subnet using the NAT Gateway in its own AZ.
+            - Avoids a single point of failure.
+            - Can reduce cross-AZ data transfer cost.
+
+    # Quick Summary:
+        1. Public Subnet
+            --> Has a default route to an Internet Gateway.
+
+        2. Private Subnet
+            --> Has no direct route to an Internet Gateway.
+
+        3. Local Route
+            --> Keeps traffic inside the VPC.
+
+        4. Internet-Reachable EC2
+            --> Needs public subnet + public IP + security group rule.
+
+        5. Auto-Assign Public IPv4
+            --> Usually ON for public subnets and OFF for private subnets.
+
+        6. NAT Gateway
+            --> Gives private instances outbound internet access.
+
+        7. Multi-AZ Design
+            --> Improves availability.
+
+        8. Private Route Tables
+            --> Prefer one per AZ, using a NAT Gateway in the same AZ.
+
+    # Lecture Summary:
+        "A subnet is public or private mainly because of its route table. Public
+        subnets route internet traffic to an Internet Gateway, while private subnets
+        do not. Private instances can still access the internet outbound through a
+        NAT Gateway. Production VPCs commonly use multiple Availability Zones with
+        separate public, application, and database subnets."
