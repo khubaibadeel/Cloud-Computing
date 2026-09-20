@@ -1,0 +1,178 @@
+# S3 Storage Classes Part I:
+    This lecture introduces the main S3 storage classes and explains how to
+    choose a class based on access frequency, retrieval needs, and cost.
+
+
+    # Why Storage Classes Exist:
+        Not all S3 objects are accessed equally.
+
+        Common access patterns:
+            - Frequent
+                Example: website assets, active uploads, transactions
+
+            - Occasional
+                Example: monthly reports, older logs, DR data
+
+            - Rare
+                Example: compliance archives, old backups, archived projects
+
+        Main idea:
+            - Frequently accessed data needs fast access.
+            - Rarely accessed data can use cheaper storage classes.
+
+
+    # Storage Class Trade-Off:
+        Lower storage cost usually comes with conditions such as:
+
+            - Retrieval fee per GB
+            - Minimum storage duration
+            - Reduced redundancy in some classes
+
+
+    # S3 Standard:
+        Default storage class for frequently accessed data.
+
+        Key points:
+            - Highest storage cost among the classes discussed.
+            - No retrieval fee.
+            - Immediate retrieval.
+            - No minimum storage duration.
+            - No minimum object size.
+            - Multi-AZ redundancy.
+
+        Best for:
+            - Frequently accessed application data.
+
+
+    # S3 Intelligent-Tiering:
+        Best when access patterns are unpredictable.
+
+        How it works:
+            - Monitors objects individually.
+            - If an object is not accessed for 30 days,
+              it can move to an infrequent access tier.
+            - On the next access, it can move back to frequent access.
+
+        Key points:
+            - No retrieval fee for automatic tier transitions.
+            - Has a monitoring fee.
+            - Objects 128 KB or smaller remain at Standard pricing
+              and do not have the monitoring fee.
+
+        Good fits:
+            - Media libraries
+            - Data lakes
+            - Mixed-age log archives
+
+
+    # S3 Standard-IA:
+        IA means Infrequent Access.
+
+        Best for:
+            - Rarely accessed data that still needs immediate retrieval.
+
+        Key points:
+            - Lower storage cost than Standard.
+            - Per-GB retrieval fee.
+            - 30-day minimum storage duration.
+            - 128 KB minimum billable object size.
+            - Multi-AZ redundancy.
+
+
+    # S3 One Zone-IA:
+        Similar access model to Standard-IA.
+
+        Main difference:
+            - Data is stored in one Availability Zone only.
+
+        Key points:
+            - About 20% cheaper than Standard-IA.
+            - One AZ means lower redundancy.
+            - AZ failure can cause data loss.
+
+        Best for:
+            - Re-creatable data.
+
+        Avoid for:
+            - Primary backups
+            - Critical customer data
+
+
+    # S3 Glacier Instant Retrieval:
+        Archive storage with millisecond retrieval.
+
+        Best for:
+            - Rarely accessed data that must still open immediately.
+
+        Key points:
+            - Multi-AZ durability.
+            - 90-day minimum storage duration.
+            - 128 KB minimum billable object size.
+            - Retrieval is immediate.
+            - Reads have a per-GB retrieval fee.
+
+        Example use cases:
+            - Medical images
+            - Compliance documents
+            - Financial records reviewed occasionally
+
+
+    # Common Storage Class Mistakes:
+        1. Standard-IA for short-lived data
+            - The 30-day minimum can create an early-delete charge.
+
+        2. One Zone-IA for primary data
+            - AZ failure can mean data loss.
+
+        3. Keeping old untouched data in Standard
+            - You keep paying the premium storage price.
+
+        4. Intelligent-Tiering for tiny files
+            - Objects under 128 KB usually do not benefit from tier transitions.
+
+
+    # Simple Selection Guide:
+        Frequently accessed
+            --> S3 Standard
+
+        Unpredictable access pattern
+            --> S3 Intelligent-Tiering
+
+        Rarely accessed, immediate retrieval, multi-AZ
+            --> S3 Standard-IA
+
+        Rarely accessed, re-creatable data, one AZ is acceptable
+            --> S3 One Zone-IA
+
+        Archive data with immediate retrieval
+            --> S3 Glacier Instant Retrieval
+
+
+    # Quick Summary:
+        1. S3 Standard
+            --> Frequent access.
+
+        2. Intelligent-Tiering
+            --> Unpredictable access.
+
+        3. Standard-IA
+            --> Infrequent access with immediate retrieval.
+
+        4. One Zone-IA
+            --> Cheaper infrequent access in one AZ.
+
+        5. Glacier Instant Retrieval
+            --> Archive pricing with immediate retrieval.
+
+        6. Trade-Off
+            --> Lower storage cost can bring retrieval fees,
+                minimum durations, or lower redundancy.
+
+
+    # Lecture Summary:
+        "Choose an S3 storage class according to how often the data is accessed,
+        how quickly it must be retrieved, and how much redundancy is required.
+        S3 Standard is the default for frequent access, Intelligent-Tiering suits
+        unpredictable access, IA classes reduce cost for infrequent data, and
+        Glacier Instant Retrieval is designed for rarely accessed archive data
+        that must still be available immediately."
