@@ -1,0 +1,166 @@
+# S3 Buckets and Objects Management Part II:
+    This lecture explains S3 upload methods, object prefixes, content type,
+    user-defined metadata, and object tags.
+
+
+    # Upload Methods:
+        S3 supports two common upload methods:
+
+        1. Single-Part Upload
+            - Best for smaller files.
+            - Under about 100 MB.
+            - Uses one HTTP PUT request.
+
+        2. Multipart Upload
+            - Recommended for files over about 100 MB.
+            - Splits the object into multiple parts.
+            - Parts can upload in parallel.
+            - Only failed parts need to be retried.
+            - S3 combines the parts after upload.
+
+        Multipart details shown:
+            - Part size: 5 MB to 5 GB.
+            - Maximum single object size: 5 TB.
+
+
+    # S3 is a Flat Namespace:
+        S3 does not use real folders.
+
+        Example object key:
+            reports/2025/Q1-summary.pdf
+
+        The console may display:
+            reports/
+                2025/
+                    Q1-summary.pdf
+
+        But internally:
+            - The full object key is one flat string.
+            - "Folders" are a visual representation based on slash-separated prefixes.
+
+
+    # Why Prefixes Matter:
+        Prefixes help organize objects logically.
+
+        Example:
+            production/invoices/2025/06/inv-00123.pdf
+
+        Good structure:
+            environment / service / year / month / filename
+
+        Benefits:
+            - Easier organization.
+            - Easier object retrieval.
+            - Useful as applications grow.
+
+        Recommendation:
+            - Start with clear prefixes.
+            - Update the structure as scale and requirements increase.
+
+
+    # Content Type:
+        Content-Type tells browsers and clients how to interpret an object.
+
+        Examples:
+            - HTML
+            - CSS
+            - Images
+            - Video
+
+        If Content-Type is incorrect:
+            - HTML may download instead of opening.
+            - Images may appear broken or trigger a file prompt.
+
+        Important:
+            - Check Content-Type when uploading objects.
+
+
+    # User-Defined Metadata:
+        User-defined metadata is custom key-value information stored with an object.
+
+        Examples:
+            x-amz-meta-photographer = Sara Ahmed
+            x-amz-meta-client = RetailChain
+            x-amz-meta-project = invoice-archive
+
+        Rules:
+            - Keys must start with:
+                x-amz-meta-
+
+            - Values are strings.
+            - Maximum total size:
+                2 KB per object.
+
+            - Metadata is set at upload time.
+            - After upload, it is immutable.
+            - Changing it requires copying or re-uploading the object.
+
+
+    # Metadata vs Object Tags:
+        Metadata:
+            - Set at upload time.
+            - Immutable after upload.
+            - Uses x-amz-meta- prefix.
+            - Limit: 2 KB total.
+            - Best for content properties.
+
+        Object Tags:
+            - Can be added, changed, or deleted later.
+            - Use normal key-value pairs.
+            - Limit: 10 tags per object.
+            - Do not require re-upload.
+
+
+    # Object Tags: Main Use Cases:
+        1. Access Control
+            - IAM conditions can use tags.
+
+            Example:
+                Confidential = Yes
+
+        2. Lifecycle Rules
+            - Tags can help decide which objects move to another storage class
+              or are deleted later.
+
+            Examples shown:
+                Environment = Dev
+                Status = Processed
+
+        3. Cost Allocation
+            - Tags can group storage costs by:
+                - Department
+                - Project
+                - Client
+                - Environment
+
+
+    # Quick Summary:
+        1. Single-Part Upload
+            --> Best for smaller files.
+
+        2. Multipart Upload
+            --> Better for larger files and parallel uploads.
+
+        3. S3 Namespace
+            --> Flat; folders are simulated using prefixes.
+
+        4. Prefixes
+            --> Provide logical organization.
+
+        5. Content-Type
+            --> Tells clients how to interpret an object.
+
+        6. User-Defined Metadata
+            --> Custom x-amz-meta- key-value pairs set at upload.
+
+        7. Object Tags
+            --> Mutable key-value pairs used for access control,
+                lifecycle rules, and cost allocation.
+
+
+    # Lecture Summary:
+        "S3 supports single-part and multipart uploads, while prefixes provide
+        logical organization in its flat namespace. Correct Content-Type helps
+        clients interpret objects properly. User-defined metadata stores fixed
+        object properties, while tags can be changed later and are useful for
+        access control, lifecycle rules, and cost allocation."
