@@ -1,2 +1,307 @@
 
 
+# IP Addressing and CIDR Notation:
+    This topic explains IPv4 addressing, CIDR notation, address-count calculation,
+    AWS-reserved subnet addresses, and how to plan VPC and subnet ranges safely.
+
+
+    # IPv4 Address Structure:
+        IPv4 uses 4 octets separated by dots.
+
+        Example:
+            10.0.1.100
+
+        Each octet:
+            - Contains 8 bits.
+            - Has a value from 0 to 255.
+
+        Total size:
+            4 x 8 bits = 32 bits
+
+        Total IPv4 address space:
+            --> About 4.3 billion addresses.
+
+
+    # Private IPv4 Ranges:
+        Common private ranges shown:
+
+            10.0.0.0 - 10.255.255.255
+                --> 10.0.0.0/8
+                --> About 16.7 million addresses
+
+            172.16.0.0 - 172.31.255.255
+                --> 172.16.0.0/12
+                --> About 1 million addresses
+
+            192.168.0.0 - 192.168.255.255
+                --> 192.168.0.0/16
+                --> About 65,000 addresses
+
+
+    # CIDR Notation:
+        Format:
+
+            IP address / prefix length
+
+        Example:
+            10.0.0.0/16
+
+        Meaning:
+            - Prefix length = fixed network bits from the left.
+            - Remaining bits = variable host bits.
+
+        Example /16:
+            - First 16 bits fixed.
+            - Last 16 bits variable.
+            - Range:
+                10.0.0.0 to 10.0.255.255
+
+        Example /24:
+            10.0.1.0/24
+
+            - First 24 bits fixed.
+            - Last 8 bits variable.
+            - Range:
+                10.0.1.0 to 10.0.1.255
+
+
+    # Easy CIDR Mental Model:
+        /8
+            --> Locks 1 octet
+
+        /16
+            --> Locks 2 octets
+
+        /24
+            --> Locks 3 octets
+
+        /32
+            --> Locks all 4 octets
+
+        Important:
+            - Bigger prefix = smaller address block.
+            - Smaller prefix = larger address block.
+
+
+    # Calculating Address Counts:
+        Formula:
+
+            2^(32 - prefix length) = total addresses
+
+        AWS reserves 5 IP addresses per subnet.
+
+        Therefore:
+
+            AWS usable addresses = total addresses - 5
+
+
+    # Common CIDR Sizes:
+        /16
+            Total:
+                65,536
+            AWS usable:
+                65,531
+
+        /20
+            Total:
+                4,096
+            AWS usable:
+                4,091
+
+        /24
+            Total:
+                256
+            AWS usable:
+                251
+
+        /26
+            Total:
+                64
+            AWS usable:
+                59
+
+        /28
+            Total:
+                16
+            AWS usable:
+                11
+
+        Important:
+            - /28 does NOT mean 28 hosts.
+            - A /28 contains 16 total addresses and 11 usable in AWS.
+
+
+    # AWS Reserved IP Addresses:
+        AWS reserves 5 addresses in every subnet.
+
+        Example subnet:
+            10.0.1.0/24
+
+        Reserved:
+
+            First (.0)
+                --> Network address
+
+            Second (.1)
+                --> VPC router
+
+            Third (.2)
+                --> AWS DNS resolver
+
+            Fourth (.3)
+                --> Reserved for future use
+
+            Last (.255)
+                --> Reserved broadcast address
+
+        For 10.0.1.0/24:
+
+            Total addresses:
+                256
+
+            Reserved:
+                5
+
+            Usable:
+                251
+
+            Usable range:
+                10.0.1.4 to 10.0.1.254
+
+
+    # Choosing a VPC CIDR Block:
+        AWS requirement shown:
+
+            VPC CIDR must be between:
+                /16 and /28
+
+        Recommendation:
+            --> Use /16 for most VPCs.
+
+        Common choices:
+
+            10.0.0.0/16
+                --> Common choice
+
+            10.1.0.0/16
+            10.2.0.0/16
+                --> Useful for multiple VPCs
+
+            172.16.0.0/16
+                --> Another private option
+
+        Important:
+            - IP addresses themselves are free.
+            - Running out of address space is expensive to fix later.
+            - VPC CIDR cannot be changed after creation.
+            - Choose carefully.
+
+
+    # Avoid CIDR Overlap:
+        VPCs that may be peered must use non-overlapping CIDRs.
+
+        Example:
+
+            VPC-prod
+                --> 10.0.0.0/16
+
+            VPC-staging
+                --> 10.1.0.0/16
+
+            VPC-dev
+                --> 10.2.0.0/16
+
+        Critical:
+            --> Peered VPC CIDR ranges must not overlap.
+
+
+    # Designing Subnet CIDRs:
+        A VPC CIDR should be divided into smaller subnet ranges.
+
+        Example VPC:
+            10.0.0.0/16
+
+        Common subnet:
+            /24
+                --> 256 total
+                --> 251 usable
+
+        Small subnet:
+            /28
+                --> 16 total
+                --> 11 usable
+
+
+    # Special CIDR Values in AWS:
+        0.0.0.0/0
+            - Represents all IPv4 addresses.
+            - Used for internet routes or allowing access from anywhere.
+            - Must be used carefully.
+
+        10.0.0.0/16
+            - Example VPC CIDR.
+            - Represents internal traffic within that VPC range.
+
+        203.0.113.5/32
+            - Represents exactly one IP address.
+            - Useful for restricting SSH to one office or laptop IP.
+
+
+    # Common CIDR Mistakes to Avoid:
+        1. Tiny VPC
+            - Choosing /28 for a VPC leaves only 11 usable IPs.
+
+        2. Overlapping CIDRs
+            - Can block future VPC peering.
+
+        3. Forgetting AWS Reserved IPs
+            - Always subtract 5 addresses per subnet.
+
+        4. VPN Conflict
+            - Avoid using ranges that overlap with on-premises networks.
+
+        5. Small Application Subnets
+            - /28 can run out of addresses quickly.
+
+        6. No Future Room
+            - Leave enough address space for future subnets and tiers.
+
+
+    # Quick Summary:
+        1. IPv4
+            --> 32-bit address made of four 8-bit octets.
+
+        2. CIDR Prefix
+            --> Defines how many bits belong to the network.
+
+        3. Host Bits
+            --> Remaining bits determine the number of addresses.
+
+        4. Address Formula
+            --> 2^(32 - prefix)
+
+        5. AWS Reserved IPs
+            --> 5 addresses per subnet.
+
+        6. /24
+            --> 256 total, 251 usable.
+
+        7. /28
+            --> 16 total, 11 usable.
+
+        8. VPC Planning
+            --> Use enough address space and avoid overlaps.
+
+        9. /32
+            --> One exact IP address.
+
+        10. 0.0.0.0/0
+            --> All IPv4 addresses.
+
+
+    # Lecture Summary:
+        "IPv4 uses 32-bit addresses written as four octets. CIDR notation defines
+        how much of the address belongs to the network and how much remains for hosts.
+        AWS reserves five IP addresses per subnet, so subnet planning must account
+        for those reserved addresses. Good VPC design uses sufficiently large,
+        non-overlapping CIDR blocks and leaves room for future growth."
