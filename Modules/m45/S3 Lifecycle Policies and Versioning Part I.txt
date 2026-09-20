@@ -1,3 +1,5 @@
+
+
 # S3 Lifecycle Policies and Versioning Part I:
     This topic explains how S3 Lifecycle Policies automate object management
     over time using transition and expiration rules.
