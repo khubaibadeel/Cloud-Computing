@@ -1,0 +1,178 @@
+# S3 Buckets and Objects Management Part I:
+    This lecture explains key S3 bucket management settings including naming,
+    Region selection, public access, versioning, encryption, tags, and bucket organization.
+
+
+    # Bucket Naming Rules:
+        S3 bucket names must be:
+
+            - Globally unique.
+            - 3 to 63 characters long.
+            - Lowercase only.
+            - Made using lowercase letters, numbers, and hyphens.
+            - Not formatted like an IP address.
+            - Without uppercase letters, underscores, spaces, or unsupported special characters.
+
+        Important:
+            - Bucket names cannot be changed after creation.
+            - Use meaningful names.
+
+        Recommended pattern:
+            [org-name]-[purpose]-[environment]
+
+        Good example:
+            digiskills-production-video-assets
+
+        Bad examples:
+            backup
+            myapp
+            test
+
+
+    # Why Global Uniqueness Matters:
+        S3 bucket names can appear in public URLs.
+
+        Example format:
+            https://[bucket-name].s3.[region].amazonaws.com/
+
+        Because the URL must be unique:
+            --> The bucket name must also be globally unique.
+
+
+    # Regional Placement:
+        You choose a Region when creating a bucket.
+
+        Important:
+            - The Region cannot be changed later.
+            - Choose a Region close to your application for lower latency.
+            - Consider data residency requirements.
+
+        Data normally stays in the selected bucket Region unless replication is configured.
+
+
+    # Block Public Access:
+        By default, AWS enables all four Block Public Access settings:
+
+            - Block public ACLs
+            - Ignore public ACLs
+            - Block public bucket policies
+            - Restrict public buckets
+
+        Purpose:
+            - Prevent accidental public exposure.
+
+        Disable public access only when public content is intentionally required.
+
+        Examples:
+            - Static website hosting
+            - Public media or downloads
+
+        Keep private data in a private bucket.
+
+
+    # S3 Versioning:
+        Versioning is disabled on new buckets by default.
+
+        When enabled:
+            - Old object versions are preserved.
+            - Accidental overwrite can be recovered.
+            - Accidental delete can be recovered.
+            - Previous versions can help with ransomware recovery.
+
+        Important:
+            - Once enabled, versioning cannot be fully disabled.
+            - It can only be suspended.
+            - More versions increase storage cost.
+
+
+    # Default Encryption:
+        Since January 2023, new S3 objects are automatically encrypted at rest.
+
+        Default:
+            SSE-S3
+                - Server-side encryption with S3-managed keys.
+                - AES-256.
+                - No extra configuration required.
+                - Zero additional cost.
+
+        Alternative:
+            SSE-KMS
+                - Uses AWS KMS.
+                - Gives more customer control.
+                - Supports audit trails and access revocation.
+                - Has more configuration and a small per-request cost.
+
+
+    # Bucket Tags:
+        Tags are key-value pairs attached to a bucket.
+
+        Key points:
+            - Zero cost.
+            - Can be added during bucket creation or later.
+            - Help organize and track resources.
+
+        Recommended examples:
+            Environment = Production / Staging / Dev
+            Team = Marketing / Data / Engineering
+            Project = WebsiteRedesign
+            CostCenter = CC-1024
+
+        Uses:
+            - Cost Explorer
+            - IAM conditions
+            - Organization
+
+
+    # 100-Bucket Limit and Avoiding Sprawl:
+        Default limit:
+            --> 100 buckets per AWS account.
+
+        The limit can be increased on request up to:
+            --> 1,000 buckets.
+
+        Common mistake:
+            app-dev-uploads
+            app-staging-uploads
+            app-production-uploads
+
+        Better approach:
+            app-uploads
+                --> dev/
+                --> staging/
+                --> production/
+
+        Benefit:
+            - Fewer buckets
+            - Easier management
+            - Cleaner security
+            - Better cost tracking
+
+
+    # Quick Summary:
+        1. Bucket names
+            --> Globally unique, lowercase, 3-63 characters.
+
+        2. Region
+            --> Chosen at creation and cannot be changed later.
+
+        3. Public Access
+            --> Blocked by default.
+
+        4. Versioning
+            --> Protects previous object versions.
+
+        5. Encryption
+            --> New objects are encrypted at rest by default.
+
+        6. Tags
+            --> Help with organization and cost tracking.
+
+        7. Bucket Sprawl
+            --> Prefer structured prefixes when separate buckets are unnecessary.
+
+
+    # Lecture Summary:
+        "Use meaningful globally unique bucket names, choose the Region carefully,
+        keep public access blocked unless it is intentionally required, use versioning
+        for recovery, rely on default encryption or KMS when needed, and use tags and
+        structured prefixes to keep S3 organized."
