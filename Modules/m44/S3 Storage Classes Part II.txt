@@ -1,0 +1,157 @@
+# S3 Storage Classes Part II:
+    This topic explains S3 Glacier Flexible Retrieval and Glacier Deep Archive
+    for long-term and rarely accessed data. It also shows how storage class
+    selection depends on retrieval speed, minimum storage duration, and cost.
+
+
+    # S3 Glacier Flexible Retrieval:
+        Best for archive data accessed once or twice a year when some delay
+        is acceptable.
+
+        Retrieval options:
+
+            1. Expedited
+                - 1 to 5 minutes.
+                - Highest retrieval cost.
+
+            2. Standard
+                - 3 to 5 hours.
+                - Moderate retrieval cost.
+
+            3. Bulk
+                - 5 to 12 hours.
+                - Lowest retrieval cost.
+                - Good for large restores.
+
+        Key points:
+            - 90-day minimum storage duration.
+            - 128 KB minimum billable size.
+            - Multi-AZ storage.
+
+        Example uses:
+            - Annual archives.
+            - Audit data.
+            - Project archives.
+            - Last-resort backups.
+
+
+    # S3 Glacier Deep Archive:
+        Designed for data that is almost never accessed.
+
+        Best for:
+            - Decades-long retention.
+            - Financial and legal archives.
+            - Medical records.
+            - Compliance logs.
+
+        Retrieval options:
+            - Standard retrieval:
+                --> Up to 12 hours.
+
+            - Bulk retrieval:
+                --> Up to 48 hours.
+
+        Key points:
+            - Lowest-cost AWS storage for very long retention.
+            - 180-day minimum storage duration.
+            - 128 KB minimum billable size.
+            - Multi-AZ storage.
+            - No expedited retrieval option.
+
+
+    # Storage Class Decision Framework:
+        Choose based on:
+            - How often data is accessed.
+            - How quickly it must be retrieved.
+            - Minimum storage duration.
+
+        Examples:
+
+            Frequent access
+                --> S3 Standard
+
+            Unknown / changing access pattern
+                --> S3 Intelligent-Tiering
+
+            Rarely accessed but needed in seconds
+                --> S3 Standard-IA
+
+            Rare and re-creatable
+                --> S3 One Zone-IA
+
+            Rare but immediate retrieval needed
+                --> S3 Glacier Instant Retrieval
+
+            Accessed yearly and can wait hours
+                --> S3 Glacier Flexible Retrieval
+
+            Almost never accessed, long-term retention
+                --> S3 Glacier Deep Archive
+
+
+    # Check Minimum Durations:
+        Cheaper storage can cost more if objects are deleted too early.
+
+        Examples shown:
+            - Delete in under 30 days:
+                Standard may be cheaper.
+
+            - Delete in under 90 days:
+                Avoid Glacier Instant / Flexible.
+
+            - Delete in under 180 days:
+                Avoid Deep Archive.
+
+        Small objects:
+            - Objects under 128 KB can be billed as 128 KB in several
+              lower-cost classes.
+
+
+    # Lifecycle Policies:
+        S3 Lifecycle Policies can automatically move objects between
+        storage classes based on age and rules.
+
+        Example flow:
+
+            Day 0
+                --> Standard
+
+            Day 30
+                --> Standard-IA
+
+            Day 90
+                --> Glacier Flexible Retrieval
+
+            Day 365
+                --> Deep Archive
+
+            Day 2555
+                --> Auto-delete
+
+        Benefit:
+            - No need to move objects manually.
+
+
+    # Quick Summary:
+        1. Glacier Flexible Retrieval
+            --> Archive storage with 1-minute to 12-hour retrieval options.
+
+        2. Glacier Deep Archive
+            --> Lowest-cost storage for data that is almost never accessed.
+
+        3. Minimum Duration
+            --> Important because deleting objects too early can increase cost.
+
+        4. 128 KB Minimum
+            --> Applies to several archive and infrequent-access classes.
+
+        5. Lifecycle Policies
+            --> Automatically transition or delete objects based on rules.
+
+
+    # Lecture Summary:
+        "Glacier Flexible Retrieval is suitable for rarely accessed archive data
+        when retrieval can wait from minutes to hours. Glacier Deep Archive is
+        designed for very long-term retention where access is extremely rare.
+        Always consider retrieval time, minimum storage duration, and object size,
+        and use lifecycle policies to automate movement between storage classes."
