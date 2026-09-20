@@ -1,2 +1,234 @@
 
 
+# S3 Lifecycle Policies and Versioning Part III:
+    This practical lesson demonstrates how to create S3 Lifecycle Rules,
+    transition object versions between storage classes, and enable MFA Delete.
+
+
+    # Manually Changing an Object Storage Class:
+        A single object can be moved manually to another storage class.
+
+        Path:
+            S3 Bucket
+                --> Select Object
+                --> Actions
+                --> Edit storage class
+
+        The console shows available storage classes and details such as:
+            - Availability Zones
+            - Minimum storage duration
+            - Supported object size
+
+        This works for individual objects, but it does not scale for hundreds
+        or thousands of objects.
+
+
+    # Creating a Lifecycle Rule:
+        Path:
+            S3 Bucket
+                --> Management
+                --> Lifecycle configuration
+                --> Create lifecycle rule
+
+        Use a meaningful rule name.
+
+        Example:
+            Old-Objects
+
+
+    # Choosing the Rule Scope:
+        A lifecycle rule can target:
+
+            - All objects in the bucket.
+            - Objects with a specific prefix.
+
+        Example prefixes:
+            documents/
+            images/
+
+        If applying the rule to all objects:
+            - Select "Apply to all objects in the bucket".
+            - Acknowledge the warning.
+
+
+    # Lifecycle Rule Actions:
+        Available actions include:
+
+            1. Transition current versions of objects between storage classes.
+
+            2. Transition noncurrent versions of objects between storage classes.
+
+            3. Expire current versions of objects.
+
+            4. Permanently delete noncurrent versions of objects.
+
+            5. Delete expired object delete markers.
+
+            6. Abort incomplete multipart uploads.
+
+
+    # Example Rule for Noncurrent Versions:
+        Goal:
+            - Keep old versions as backups.
+            - Move them to cheaper storage.
+            - Permanently delete them later.
+
+        Example flow:
+
+            After 30 days:
+                --> Move noncurrent versions to Standard-IA.
+
+            After 90 days:
+                --> Move noncurrent versions to Glacier Flexible Retrieval.
+
+            After 250 days:
+                --> Permanently delete noncurrent versions.
+
+        Number of newer noncurrent versions to retain:
+            --> 5
+
+        Meaning:
+            - The newest five noncurrent versions are retained.
+            - Older eligible versions follow the lifecycle actions.
+
+
+    # Lifecycle Timing:
+        Important:
+            - Lifecycle timing starts from the object's creation or upload date.
+            - It does NOT start from the date the lifecycle rule is created.
+
+        Result:
+            - Older existing objects may become eligible immediately
+              after the rule is created.
+
+        Therefore:
+            - Review object ages before enabling a lifecycle rule.
+
+
+    # Incomplete Multipart Upload Cleanup:
+        Lifecycle rules can also delete incomplete multipart uploads.
+
+        Use case:
+            - Some upload parts reached S3.
+            - The upload never completed.
+            - The partial data is not useful.
+
+        Lifecycle action:
+            --> Abort incomplete multipart uploads after a specified number of days.
+
+
+    # MFA Delete:
+        MFA Delete adds Multi-Factor Authentication protection to certain
+        versioning-related delete operations.
+
+        In this practical:
+            - MFA Delete is initially disabled.
+            - It cannot be enabled directly from the S3 console.
+
+        It can be enabled using:
+            - AWS CLI
+            - SDK
+            - S3 REST API
+
+
+    # Requirements for MFA Delete:
+        Before enabling MFA Delete:
+
+            - Sign in as the AWS root user.
+            - Bucket versioning must be enabled.
+            - Root user access keys are required for the CLI setup.
+            - An MFA device must already be configured.
+
+
+    # Using AWS CloudShell:
+        AWS CloudShell is used as the CLI environment.
+
+        First configure root credentials:
+
+            aws configure
+
+        Enter:
+            - Access Key ID
+            - Secret Access Key
+            - Region
+            - Output format
+
+
+    # Information Needed for MFA Delete:
+        The command requires:
+
+            - Bucket name
+            - AWS Region
+            - MFA device ARN / identifier
+            - Current MFA code
+
+        Important:
+            - MFA codes expire quickly.
+            - If a code expires, run the command again with a new MFA code.
+
+
+    # Verifying MFA Delete:
+        After the CLI command succeeds:
+
+            S3 Bucket
+                --> Properties
+
+        Check:
+            Multi-factor authentication (MFA) delete
+                --> Enabled
+
+
+    # Lifecycle Rules and MFA Delete:
+        Important:
+            - A bucket using MFA Delete cannot use Lifecycle configuration.
+            - You must choose the approach that fits the use case.
+
+
+    # Practical Workflow:
+        1. Open the existing S3 bucket.
+        2. Manually change an object's storage class.
+        3. Open the Management tab.
+        4. Create a Lifecycle Rule.
+        5. Choose the rule scope.
+        6. Select lifecycle actions.
+        7. Configure transitions for noncurrent versions.
+        8. Configure permanent deletion after the required period.
+        9. Review object age because lifecycle timing uses object creation dates.
+        10. Sign in as root for MFA Delete.
+        11. Configure root access keys in AWS CloudShell.
+        12. Run the MFA Delete command with the MFA device and current code.
+        13. Verify MFA Delete from the bucket Properties page.
+
+
+    # Quick Summary:
+        1. Manual Storage Class Change
+            --> Useful for individual objects.
+
+        2. Lifecycle Rule
+            --> Automates transitions and deletion.
+
+        3. Rule Scope
+            --> Can target all objects or a prefix.
+
+        4. Noncurrent Versions
+            --> Can move to cheaper storage and later be permanently deleted.
+
+        5. Lifecycle Timing
+            --> Based on object creation/upload date.
+
+        6. Incomplete Multipart Uploads
+            --> Can be automatically aborted.
+
+        7. MFA Delete
+            --> Requires root credentials, versioning, MFA, and CLI/API access.
+
+        8. Lifecycle + MFA Delete
+            --> Cannot be used together on the same bucket.
+
+
+    # Lecture Summary:
+        "This practical demonstrates how S3 Lifecycle Rules automate storage-class
+        transitions and permanent deletion for object versions. Lifecycle timing is
+        based on object age, not rule creation time. MFA Delete adds extra protection
+        for versioned delete operations and must be enabled through the CLI or API
+        using the root user and an MFA device."
