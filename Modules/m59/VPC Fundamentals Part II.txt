@@ -1,2 +1,255 @@
 
 
+# VPC Fundamentals Part II:
+    This topic explains how EC2 connects to a VPC through network interfaces,
+    how IP addressing and DNS work inside a VPC, and how flow logs, peering,
+    and secondary CIDR blocks support VPC operations.
+
+
+    # Elastic Network Interface (ENI):
+        ENI stands for Elastic Network Interface.
+
+        It is:
+            --> The virtual network card of an EC2 instance.
+
+        Relationship:
+
+            EC2 Instance
+                --> ENI
+                    --> Security Group
+
+        Important:
+            - Security Groups attach to the ENI.
+            - They do not attach directly to the EC2 instance.
+
+
+    # Three Types of IP Addresses:
+        1. Private IP
+            - Permanent for the life of the ENI.
+            - Used for internal VPC communication.
+
+        2. Public IP
+            - Dynamic.
+            - Can change after stop/start.
+            - Used for internet access.
+
+        3. Elastic IP
+            - Static until you release it.
+            - Used when a stable public address is required.
+
+        Common use:
+            - DNS
+            - Failover
+            - Stable public endpoints
+
+
+    # DNS Inside a VPC:
+        AWS provides a built-in DNS resolver.
+
+        Resolver location:
+            --> Second IP address of the VPC CIDR.
+
+        Example:
+            VPC CIDR:
+                10.0.0.0/16
+
+            AWS DNS Resolver:
+                10.0.0.2
+
+
+    # VPC DNS Attributes:
+        1. enableDnsSupport
+            - Enables DNS resolution through the AWS resolver.
+            - Default:
+                ON
+
+        2. enableDnsHostnames
+            - Assigns private DNS names to EC2 instances.
+            - Default for custom VPCs:
+                OFF
+
+
+    # What VPC DNS Can Resolve:
+        VPC DNS can resolve:
+
+            - AWS service endpoints
+            - EC2 private hostnames
+            - Route 53 private hosted zones
+            - Public internet names
+
+
+    # VPC Flow Logs:
+        VPC Flow Logs capture network-flow metadata.
+
+        They can operate at:
+            - VPC level
+            - Subnet level
+            - ENI level
+
+        Information captured includes:
+            - Source IP
+            - Destination IP
+            - Source port
+            - Destination port
+            - Protocol
+            - Bytes
+            - ACCEPT / REJECT
+            - Timestamp
+
+        Think of Flow Logs as:
+            --> Network CCTV for your VPC.
+
+
+    # Flow Log Destinations:
+        Flow logs can be sent to:
+
+            CloudWatch Logs
+                - Useful for quick queries and troubleshooting.
+
+            Amazon S3
+                - Useful for long-term storage and later analysis.
+
+
+    # Flow Log Use Cases:
+        Common uses include:
+
+            - Security investigation
+            - Compliance audit trail
+            - Connectivity troubleshooting
+
+
+    # Reading a Flow Log Record:
+        Example fields shown:
+
+            src-ip:
+                10.0.1.5
+
+            dst-ip:
+                10.0.2.100
+
+            dst-port:
+                443
+
+            src-port:
+                49152
+
+            protocol:
+                6
+
+            packets / bytes:
+                10 / 8500
+
+            action:
+                ACCEPT
+
+        Interpretation:
+            - Source is a client inside the VPC.
+            - Destination is another system.
+            - Port 443 means HTTPS.
+            - Protocol 6 means TCP.
+            - ACCEPT means the traffic was allowed.
+
+        Flow Logs help answer:
+            - Was the traffic allowed or blocked?
+            - Where did it come from?
+            - Where was it going?
+
+
+    # VPC Peering:
+        VPC Peering provides private IP connectivity between VPCs.
+
+        Example:
+
+            VPC A
+                <--> VPC B
+                    <--> VPC C
+
+        Important limitation:
+            - VPC Peering is non-transitive.
+
+        Meaning:
+            - If VPC A peers with VPC B,
+              and VPC B peers with VPC C,
+              VPC A cannot automatically reach VPC C through VPC B.
+
+
+    # Secondary CIDR Blocks:
+        Problem:
+            - The primary VPC CIDR can run out of IP addresses as the environment grows.
+
+        Solution:
+            --> Add secondary CIDR blocks to the same VPC.
+
+        Best practice shown:
+            - Choose an initial CIDR with several times more addresses
+              than you expect to need.
+
+
+    # Secondary CIDR Rules:
+        Key rules shown:
+
+            - Up to 4 additional CIDRs per VPC.
+            - Must not overlap the primary CIDR.
+            - Must not overlap CIDRs of peered VPCs.
+            - Resources can use addresses from both primary and secondary ranges.
+
+
+    # Key VPC Operational Facts:
+        Primary CIDR:
+            - Cannot be changed after VPC creation.
+            - Secondary CIDRs can be added.
+
+        VPC Region:
+            - Cannot be changed.
+            - Create a new VPC in the target Region if needed.
+
+        Delete VPC:
+            - Contained resources must be deleted first.
+
+        Default VPC:
+            - If deleted, it can be recreated from VPC Actions.
+
+        VPC Quota:
+            - Default shown:
+                5 VPCs per Region.
+            - Increase can be requested if needed.
+
+
+    # Quick Summary:
+        1. ENI
+            --> Virtual network card for EC2.
+
+        2. Private IP
+            --> Internal VPC communication.
+
+        3. Public IP
+            --> Dynamic internet-facing address.
+
+        4. Elastic IP
+            --> Static public address.
+
+        5. AWS DNS Resolver
+            --> Located at the second IP of the VPC CIDR.
+
+        6. VPC Flow Logs
+            --> Capture network-flow metadata.
+
+        7. VPC Peering
+            --> Private connectivity between VPCs.
+
+        8. Peering Limitation
+            --> Non-transitive.
+
+        9. Secondary CIDR
+            --> Adds more IP address space to an existing VPC.
+
+        10. Primary CIDR
+            --> Cannot be changed after creation.
+
+
+    # Lecture Summary:
+        "EC2 connects to a VPC through an Elastic Network Interface, which carries
+        private and public addressing and security-group associations. VPC DNS
+        provides name resolution, Flow Logs help monitor and troubleshoot traffic,
+        VPC Peering connects VPCs privately but is non-transitive, and secondary
+        CIDR blocks allow a VPC to expand when additional IP addresses are needed."
