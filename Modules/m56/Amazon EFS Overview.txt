@@ -1,2 +1,152 @@
 
 
+# Amazon EFS Overview:
+    This topic introduces Amazon EFS as a fully managed shared file system
+    for Linux workloads and explains how it differs from EBS and S3.
+
+
+    # What is Amazon EFS?
+        EFS stands for Elastic File System.
+
+        It provides:
+            - Shared file storage.
+            - NFS-based access.
+            - Elastic capacity.
+            - Managed storage for Linux workloads.
+
+        Main idea:
+            - Multiple EC2 instances can mount the same EFS file system
+              at the same time.
+
+        Think of EFS like:
+            --> A shared network drive in the cloud.
+
+
+    # EBS vs EFS vs S3:
+        Amazon EBS:
+            - Block storage.
+            - Usually attached to one EC2 instance at a time.
+            - Works with Linux and Windows.
+            - Fixed volume size.
+            - Best for OS disks and databases.
+
+        Amazon EFS:
+            - File storage using NFS.
+            - Many EC2 instances can access it simultaneously.
+            - Linux workloads.
+            - Automatically scales.
+            - Best for shared content and web fleets.
+
+        Amazon S3:
+            - Object storage.
+            - Accessed through API / SDK.
+            - Works with any platform.
+            - Elastic.
+            - Best for backups, media, and data lakes.
+
+
+    # How EFS Works:
+        EFS uses mount targets inside a VPC.
+
+        Key points:
+            - One mount target per Availability Zone.
+            - Each mount target is an NFS endpoint.
+            - EC2 connects to the mount target in its own AZ.
+            - The same EFS file system can be mounted by many EC2 instances.
+            - Data is replicated across Availability Zones automatically.
+
+
+    # EFS Storage Classes:
+        1. EFS Standard
+            - Used for frequently accessed files.
+            - Higher storage cost per GB.
+
+        2. EFS Infrequent Access
+            - Used for files not accessed for 30+ days.
+            - Can be much cheaper than Standard.
+            - Small retrieval fee when accessed.
+
+        Lifecycle behavior:
+            - Files not accessed for a selected number of days can move
+              automatically to Infrequent Access.
+            - No application code changes are required.
+
+
+    # Performance Modes:
+        Performance mode is selected when the file system is created.
+
+        1. General Purpose
+            - Default option.
+            - Best for:
+                - Web servers
+                - CMS
+                - Development workloads
+
+        2. Max I/O
+            - Best for:
+                - Hundreds of concurrent instances.
+                - Large-scale or big-data workloads.
+
+
+    # Throughput Modes:
+        Throughput mode can be changed later.
+
+        1. Bursting
+            - Throughput scales with file-system size.
+            - Best for small, bursty workloads.
+
+        2. Elastic
+            - Automatically scales throughput up and down.
+            - Recommended for variable access patterns.
+
+        3. Provisioned
+            - Fixed MiB/s throughput.
+            - Best for consistently high throughput requirements.
+
+
+    # Common EFS Use Cases:
+        Web Server Fleet:
+            - Multiple EC2 web servers use the same uploaded files.
+
+        WordPress Multi-Server:
+            - wp-content/uploads can be shared across servers.
+
+        Container Workloads:
+            - ECS or EKS can use persistent shared storage.
+
+        Machine Learning:
+            - Multiple GPU instances can read the same dataset.
+
+
+    # Quick Summary:
+        1. EFS
+            --> Shared NFS file storage for Linux.
+
+        2. Multi-Instance Access
+            --> Many EC2 instances can mount the same file system.
+
+        3. Elastic Capacity
+            --> Storage grows automatically.
+
+        4. Mount Targets
+            --> NFS endpoints inside the VPC.
+
+        5. Standard
+            --> Frequently accessed files.
+
+        6. Infrequent Access
+            --> Lower-cost storage for less frequently accessed files.
+
+        7. General Purpose
+            --> Default performance mode.
+
+        8. Elastic Throughput
+            --> Automatically adjusts to changing workloads.
+
+
+    # Lecture Summary:
+        "Amazon EFS provides managed, elastic, shared file storage for Linux workloads.
+        Unlike EBS, which is block storage for individual EC2 instances, EFS can be
+        mounted by many instances at the same time. It supports multiple storage and
+        throughput modes and is well suited to web farms, WordPress, containers,
+        and shared machine-learning datasets."
