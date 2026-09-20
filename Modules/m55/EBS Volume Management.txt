@@ -1,2 +1,432 @@
 
 
+# EBS Volume Management:
+    This practical lesson demonstrates how to create an additional EBS volume,
+    attach it to an EC2 instance, format and mount it in Linux, test persistence,
+    create a snapshot, and then detach and delete the volume.
+
+
+    # Step 1: Launch an EC2 Instance:
+        Path:
+            EC2
+                --> Instances
+                --> Launch instance
+
+        Example name:
+            Test-EBS
+
+        Storage:
+            - Use gp3 as the root volume.
+            - The lesson uses an 8 GB boot volume.
+
+        Important:
+            - gp3, gp2, io1, and io2 can be used as boot volumes.
+            - st1 and sc1 HDD volumes cannot be used as boot volumes.
+
+
+    # Step 2: Connect to the EC2 Instance:
+        Connect to the instance and check currently attached disks.
+
+        Command:
+
+            lsblk
+
+        Result:
+            - The existing 8 GB OS/root volume is shown.
+
+
+    # Step 3: Check the Availability Zone:
+        An EBS volume must be in the same Availability Zone as the EC2 instance.
+
+        Path:
+            EC2 Instance
+                --> Networking
+
+        Example shown:
+            eu-north-1c
+
+        Important:
+            - Create the new EBS volume in the same AZ.
+
+
+    # Step 4: Create a New EBS Volume:
+        Path:
+            EC2
+                --> Elastic Block Store
+                --> Volumes
+                --> Create volume
+
+        Settings used:
+
+            Volume type:
+                gp3
+
+            Size:
+                10 GB
+
+            Availability Zone:
+                Same AZ as the EC2 instance
+
+            Encryption:
+                Use the default AWS KMS key
+
+        Then:
+            --> Create volume
+
+
+    # Step 5: Attach the Volume to EC2:
+        Wait until the volume becomes available.
+
+        Path:
+            Select Volume
+                --> Actions
+                --> Attach volume
+
+        Select:
+            - The EC2 instance.
+            - A device name such as /dev/sdb.
+
+        Then:
+            --> Attach volume
+
+        Important:
+            - The EC2 instance and EBS volume must be in the same AZ.
+
+
+    # Step 6: Verify the New Disk:
+        Connect to the EC2 instance again.
+
+        Command:
+
+            lsblk
+
+        Result:
+            - A second disk appears.
+
+        Example device shown by Linux:
+            /dev/nvme1n1
+
+
+    # Step 7: Format the New EBS Volume:
+        The new volume must be formatted before use.
+
+        In the lesson, XFS is used.
+
+        Command:
+
+            sudo mkfs -t xfs /dev/nvme1n1
+
+        Result:
+            - The volume is formatted with the XFS file system.
+
+        Important:
+            - Confirm the correct device name with lsblk before formatting.
+
+
+    # Step 8: Create a Mount Directory:
+        Create a directory where the EBS volume will be mounted.
+
+        Command:
+
+            sudo mkdir /data
+
+        Verify:
+
+            ls /
+
+
+    # Step 9: Mount the EBS Volume:
+        Mount the new volume on /data.
+
+        Command:
+
+            sudo mount /dev/nvme1n1 /data
+
+        Verify:
+
+            df -h
+
+        Expected result:
+            - /dev/nvme1n1 is mounted on /data.
+            - The volume size is about 10 GB.
+
+
+    # Step 10: Write Data to the Volume:
+        Create a folder:
+
+            sudo mkdir /data/docs
+
+        Create a file:
+
+            sudo touch /data/docs/test.txt
+
+        Edit the file:
+
+            sudo nano /data/docs/test.txt
+
+        Save in nano:
+            Ctrl + X
+            Y
+            Enter
+
+        Verify the content:
+
+            cat /data/docs/test.txt
+
+
+    # Step 11: Test EBS Persistence:
+        Unmount the volume:
+
+            sudo umount /data
+
+        Verify:
+
+            df -h
+
+        Result:
+            - The EBS volume no longer appears as mounted.
+
+        Mount it again:
+
+            sudo mount /dev/nvme1n1 /data
+
+        Read the file again:
+
+            cat /data/docs/test.txt
+
+        Result:
+            - The previously written data is still available.
+
+        Conclusion:
+            --> EBS storage persists independently of mounting and unmounting.
+
+
+    # Mount Point Naming:
+        You can use meaningful mount directories.
+
+        Examples:
+
+            /data
+            /data01
+            /data02
+
+        Choose names according to application requirements.
+
+
+    # Step 12: Prepare for a Snapshot:
+        Before creating the snapshot:
+
+            1. Unmount the data volume.
+            2. Stop the EC2 instance for better consistency.
+
+        Then open:
+
+            EC2
+                --> Volumes
+
+
+    # Step 13: Create an EBS Snapshot:
+        Select the 10 GB EBS volume.
+
+        Path:
+            Actions
+                --> Create snapshot
+
+        Optional:
+            - Add a description.
+            - Add tags.
+
+        Then:
+            --> Create snapshot
+
+        Snapshot state:
+            Pending
+                --> Processing
+
+            Completed
+                --> Snapshot is ready
+
+        The time depends on how much data is stored on the volume.
+
+
+    # Step 14: Recycle Bin:
+        AWS Recycle Bin can protect accidentally deleted resources.
+
+        It is not enabled automatically.
+
+        You can create retention rules for:
+
+            - EBS snapshots
+            - EBS volumes
+            - Amazon Machine Images (AMIs)
+
+        A rule can target:
+
+            - All matching resources
+            OR
+            - Resources with specific tags
+
+        Example:
+            Environment = Production
+
+        You can also define how long deleted resources should be retained
+        before permanent deletion.
+
+
+    # Step 15: Detach the EBS Volume:
+        Before detaching:
+
+            - Unmount the volume from Linux.
+
+        Then:
+
+            EC2
+                --> Volumes
+                --> Select 10 GB volume
+                --> Actions
+                --> Detach volume
+
+        After detaching:
+
+            Volume state changes:
+                in-use
+                    --> available
+
+
+    # Step 16: Reattach the Volume:
+        A detached EBS volume can be attached again to an EC2 instance
+        in the same Availability Zone.
+
+        Path:
+            Select Volume
+                --> Actions
+                --> Attach volume
+
+        After attachment:
+
+            lsblk
+
+        Then mount it again:
+
+            sudo mount /dev/nvme1n1 /data
+
+        The previous data should still be present.
+
+
+    # Step 17: Delete the Extra Volume:
+        When the detached volume is no longer required:
+
+            Select Volume
+                --> Actions
+                --> Delete volume
+
+        Important:
+            - A volume must normally be detached before deletion.
+
+
+    # Step 18: Clean Up the EC2 Instance:
+        The root EBS volume normally uses the EC2 setting:
+
+            Delete on termination
+
+        If enabled:
+            - Terminating the EC2 instance also deletes its root EBS volume.
+
+        This behavior can be changed from the EC2 storage settings.
+
+
+    # Important Commands Used:
+        Show block devices:
+
+            lsblk
+
+        Format as XFS:
+
+            sudo mkfs -t xfs /dev/nvme1n1
+
+        Create mount point:
+
+            sudo mkdir /data
+
+        Mount:
+
+            sudo mount /dev/nvme1n1 /data
+
+        Show mounted file systems:
+
+            df -h
+
+        Create directory:
+
+            sudo mkdir /data/docs
+
+        Create file:
+
+            sudo touch /data/docs/test.txt
+
+        Edit file:
+
+            sudo nano /data/docs/test.txt
+
+        Read file:
+
+            cat /data/docs/test.txt
+
+        Unmount:
+
+            sudo umount /data
+
+
+    # Practical Workflow:
+        1. Launch an EC2 instance with a gp3 root volume.
+        2. Connect and run lsblk.
+        3. Check the instance Availability Zone.
+        4. Create a 10 GB gp3 EBS volume in the same AZ.
+        5. Attach the new volume to EC2.
+        6. Run lsblk and identify the new device.
+        7. Format it with XFS.
+        8. Create /data.
+        9. Mount the volume on /data.
+        10. Create a test file and add data.
+        11. Unmount and remount the volume.
+        12. Confirm the data still exists.
+        13. Stop the instance and create a snapshot.
+        14. Wait for snapshot status to become Completed.
+        15. Review Recycle Bin retention rules.
+        16. Detach the EBS volume.
+        17. Reattach it if required.
+        18. Delete unused volumes, snapshots, and the test EC2 instance.
+
+
+    # Quick Summary:
+        1. EBS Volume
+            --> Persistent block storage attached to EC2.
+
+        2. Same Availability Zone
+            --> Required for attaching an EBS volume to an EC2 instance.
+
+        3. Formatting
+            --> Prepares the new disk with a file system.
+
+        4. Mounting
+            --> Makes the file system accessible through a Linux directory.
+
+        5. Persistence
+            --> Data remains after unmounting and remounting.
+
+        6. Snapshot
+            --> Point-in-time backup of an EBS volume.
+
+        7. Recycle Bin
+            --> Helps recover accidentally deleted EBS resources.
+
+        8. Detach / Reattach
+            --> The same volume can be disconnected and later attached again.
+
+
+    # Lecture Summary:
+        "This practical shows the complete lifecycle of an additional EBS volume:
+        create it in the same Availability Zone as EC2, attach it, format it,
+        mount it, write data, test persistence, create a snapshot, and detach or
+        reattach it when required. EBS provides persistent block storage that
+        remains available independently of the EC2 mount operation."
