@@ -1,0 +1,211 @@
+# S3 Buckets and Objects Management Part III:
+    This practical lesson demonstrates how to create an S3 bucket, upload objects
+    through the console and AWS CLI, use versioning, and share a private object
+    temporarily with a presigned URL.
+
+
+    # Creating an S3 Bucket:
+        Path:
+            AWS Console
+                --> S3
+                --> Create bucket
+
+        Main settings used in this practical:
+
+            Region:
+                - Verify the required AWS Region.
+                - A bucket remains in the Region where it is created.
+
+            Bucket Type:
+                --> General purpose
+
+            Bucket Namespace:
+                --> Global namespace
+
+            Bucket Name:
+                - Use a meaningful and globally unique name.
+
+            Object Ownership:
+                - ACLs disabled.
+                - This is the recommended setting used in the lesson.
+
+            Block Public Access:
+                - Kept enabled.
+                - The bucket remains private.
+
+            Bucket Versioning:
+                - Enabled for this practical.
+                - By default, versioning is disabled.
+
+            Encryption:
+                - Default server-side encryption:
+                    SSE-S3
+
+
+    # Creating a Folder in S3:
+        Example folder:
+            images/
+
+        Important:
+            - S3 uses a flat namespace.
+            - The console shows folders for convenience.
+            - Internally, folders are prefixes added to object keys.
+
+
+    # Uploading an Object Through the Console:
+        Example:
+            images/
+                --> Upload image file
+
+        After upload, the object page shows details such as:
+
+            - Properties
+            - Metadata
+            - Permissions
+            - Versions
+            - Object tags
+
+        Content-Type example:
+            image/jpeg
+
+        Important:
+            - Verify that the detected Content-Type is correct.
+
+
+    # Uploading Through AWS CloudShell:
+        AWS CloudShell provides a small Linux environment inside the AWS Console.
+
+        It includes:
+            - AWS CLI
+            - Linux commands
+
+        Example files:
+            myfile.txt
+            100mb-file.bin
+
+
+    # AWS CLI Upload:
+        Basic command:
+
+            aws s3 cp myfile.txt s3://BUCKET-NAME/documents/
+
+        Meaning:
+            - Copies the local file to the S3 bucket.
+
+        Example for a larger file:
+
+            aws s3 cp 100mb-file.bin s3://BUCKET-NAME/documents/
+
+        The upload may use multipart upload in the background for larger files.
+
+
+    # Testing S3 Versioning:
+        First upload:
+            myfile.txt
+
+        Then edit the file:
+
+            nano myfile.txt
+
+        Add new content and save it.
+
+        Re-upload using the same object name:
+
+            aws s3 cp myfile.txt s3://BUCKET-NAME/documents/
+
+        Result:
+            - S3 stores another version of the same object.
+            - The latest version becomes the current version.
+
+
+    # Viewing Object Versions:
+        In the object's Versions section:
+
+            - Multiple versions can be listed.
+            - Older versions remain available.
+            - A specific version can be downloaded.
+            - A specific version can also be deleted.
+
+        Example:
+            Version 1
+                --> Original file
+
+            Version 2
+                --> Updated file
+
+        Benefit:
+            - Helps recover earlier versions after accidental overwrite.
+
+
+    # Presigned URLs:
+        A presigned URL provides temporary access to a private S3 object.
+
+        Path:
+            Select object
+                --> Object actions
+                --> Share with a presigned URL
+
+        Important:
+            - The bucket and object can remain private.
+            - Anyone with the URL can access the object until the URL expires.
+
+
+    # Presigned URL Expiration Test:
+        Example:
+            Expiration:
+                --> 2 minutes
+
+        Before expiration:
+            - The private object can be opened through the URL.
+
+        After expiration:
+            - Access fails.
+            - The request returns an Access Denied / expired request error.
+
+
+    # Practical Workflow:
+        1. Open Amazon S3.
+        2. Create a general-purpose bucket.
+        3. Keep Block Public Access enabled.
+        4. Enable versioning.
+        5. Keep default SSE-S3 encryption.
+        6. Create prefixes such as images/ and documents/.
+        7. Upload an object through the console.
+        8. Upload files through AWS CloudShell using aws s3 cp.
+        9. Modify and re-upload the same object.
+        10. View the generated object versions.
+        11. Create a presigned URL.
+        12. Confirm that access stops after the URL expires.
+
+
+    # Quick Summary:
+        1. S3 Bucket
+            --> Created in a selected AWS Region.
+
+        2. Block Public Access
+            --> Keeps the bucket private.
+
+        3. Versioning
+            --> Preserves multiple versions of an object.
+
+        4. SSE-S3
+            --> Default server-side encryption used in the practical.
+
+        5. AWS CloudShell
+            --> Browser-based Linux environment with AWS CLI.
+
+        6. aws s3 cp
+            --> Uploads files to S3.
+
+        7. Prefix
+            --> Used by S3 to represent folder-like organization.
+
+        8. Presigned URL
+            --> Temporarily shares a private object.
+
+
+    # Lecture Summary:
+        "This practical demonstrates S3 bucket creation, console and CLI uploads,
+        object versioning, and temporary private object sharing using presigned URLs.
+        Versioning preserves previous object versions, while presigned URLs provide
+        time-limited access without making the bucket public."
