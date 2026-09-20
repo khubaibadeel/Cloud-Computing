@@ -1,2 +1,248 @@
 
 
+# S3 Bucket Creation and Configuration:
+    This practical lesson demonstrates how to create and configure an S3 bucket,
+    enable versioning, upload multiple object versions, and control public and
+    private access using bucket policies.
+
+
+    # Creating the S3 Bucket:
+        Path:
+            AWS Console
+                --> S3
+                --> Create bucket
+
+        Main settings used:
+
+            Bucket Name:
+                - Must be globally unique.
+                - If the name already exists, choose another name.
+
+            ACLs:
+                --> Disabled.
+
+            Block Public Access:
+                --> Enabled initially.
+
+            Bucket Versioning:
+                --> Enabled.
+
+            Other settings:
+                --> Kept at their defaults.
+
+
+    # Testing Versioning:
+        Create a file:
+
+            demo.txt
+
+        Example first content:
+            This is version one.
+            This is the first version of the file.
+
+        Upload the file through the S3 console.
+
+        Result:
+            - The uploaded file becomes the current version.
+
+
+    # Uploading a New Version:
+        Edit the same local file and add more content.
+
+        Upload it again using the same object name.
+
+        Result:
+            - S3 does not show separate filenames in the normal object list.
+            - Multiple versions appear inside the object's Versions section.
+
+        Example:
+            First version
+                --> 48 bytes
+
+            New version
+                --> 103 bytes
+
+        Version states:
+            - Latest upload --> Current version.
+            - Older upload --> Noncurrent version.
+
+
+    # Version Details:
+        For each object version, S3 can show details such as:
+
+            - Version ID
+            - Storage class
+            - Checksum
+            - Metadata
+            - User-defined metadata
+            - Content-Type
+
+        Example:
+            Content-Type:
+                text/plain
+
+
+    # Creating Public and Private Prefixes:
+        Create two folder-like prefixes:
+
+            public/
+            private/
+
+        Upload:
+            - A demo file into public/
+            - A private file into private/
+
+        Important:
+            - These are S3 prefixes, not real folders.
+
+
+    # Initial Access Test:
+        Copy the object URL and open it in a private browser window.
+
+        Initial result:
+            --> Access Denied
+
+        Reason:
+            - Block Public Access is still enabled.
+
+
+    # Disabling Block Public Access:
+        Path:
+            S3 Bucket
+                --> Permissions
+                --> Block public access
+                --> Edit
+
+        Action:
+            - Disable Block All Public Access.
+            - Confirm the warning.
+            - Save changes.
+
+        Important:
+            - This alone does not automatically make objects public.
+
+
+    # Bucket Policy:
+        To allow public access, add a resource-based bucket policy.
+
+        Example policy idea:
+
+            Effect:
+                Allow
+
+            Principal:
+                "*"
+
+            Action:
+                s3:GetObject
+
+            Resource:
+                arn:aws:s3:::BUCKET-NAME/*
+
+        Meaning:
+            - Everyone can read every object in the bucket.
+
+        Result:
+            - Both public/ and private/ objects become accessible.
+
+
+    # Restricting Public Access to One Prefix:
+        To keep only public/ accessible, update the bucket policy.
+
+        Public folder rule:
+
+            Effect:
+                Allow
+
+            Principal:
+                "*"
+
+            Action:
+                s3:GetObject
+
+            Resource:
+                arn:aws:s3:::BUCKET-NAME/public/*
+
+        Private folder rule:
+
+            Effect:
+                Deny
+
+            Principal:
+                "*"
+
+            Action:
+                s3:GetObject
+
+            Resource:
+                arn:aws:s3:::BUCKET-NAME/private/*
+
+
+    # Testing the Final Policy:
+        Public object:
+            --> Accessible.
+
+        Private object:
+            --> Access Denied.
+
+        This confirms:
+            - public/ objects are readable.
+            - private/ objects remain blocked.
+
+
+    # Key Security Point:
+        Explicit Deny overrides Allow.
+
+        This makes it possible to keep one prefix private even when other
+        parts of the bucket are publicly readable.
+
+
+    # Practical Workflow:
+        1. Create an S3 bucket.
+        2. Keep ACLs disabled.
+        3. Enable versioning.
+        4. Keep Block Public Access enabled initially.
+        5. Upload demo.txt.
+        6. Edit and upload the same file again.
+        7. View current and noncurrent versions.
+        8. Create public/ and private/ prefixes.
+        9. Upload test files into both.
+        10. Disable Block Public Access.
+        11. Add a bucket policy.
+        12. Test public access.
+        13. Update the policy to allow only public/.
+        14. Confirm private/ returns Access Denied.
+
+
+    # Quick Summary:
+        1. Bucket Name
+            --> Must be globally unique.
+
+        2. Versioning
+            --> Keeps multiple versions of the same object.
+
+        3. Current Version
+            --> Latest uploaded version.
+
+        4. Noncurrent Version
+            --> Older version.
+
+        5. Block Public Access
+            --> Prevents public access until intentionally changed.
+
+        6. Bucket Policy
+            --> Resource-based policy controlling access to bucket objects.
+
+        7. s3:GetObject
+            --> Allows object read access.
+
+        8. Explicit Deny
+            --> Overrides Allow.
+
+
+    # Lecture Summary:
+        "This practical shows how to create an S3 bucket with versioning,
+        upload multiple versions of the same object, and use bucket policies
+        to control public access. A broad public-read policy can expose all
+        objects, while prefix-specific Allow and Deny rules can keep public
+        and private content separated."
