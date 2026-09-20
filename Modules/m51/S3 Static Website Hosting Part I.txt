@@ -1,2 +1,172 @@
 
 
+# S3 Static Website Hosting Part I:
+    This practical lesson demonstrates how to host a static website on Amazon S3
+    using HTML, CSS, and JavaScript files.
+
+
+    # Prerequisites:
+        Prepare the website files before starting.
+
+        Example files:
+            - index.html
+            - error.html
+            - style.css
+            - script.js
+
+        Important:
+            - The lesson focuses on S3 and cloud configuration.
+            - Website files can be prepared separately before the practical.
+
+
+    # Creating the S3 Bucket:
+        Path:
+            AWS Console
+                --> S3
+                --> Create bucket
+
+        Main settings used:
+
+            Bucket Name:
+                - Must be globally unique.
+
+            Block Public Access:
+                - Disable "Block all public access".
+
+            Warning:
+                - Confirm that public access is intentional.
+
+            Versioning:
+                - Not enabled for this practical.
+
+        Result:
+            --> Create the bucket.
+
+
+    # Enable Static Website Hosting:
+        Path:
+            S3 Bucket
+                --> Properties
+                --> Static website hosting
+                --> Edit
+
+        Select:
+            --> Enable
+
+        Hosting Type:
+            --> Host a static website
+
+
+    # Configure Website Documents:
+        Index document:
+            index.html
+
+        Error document:
+            error.html
+
+        Save the changes.
+
+
+    # Upload Website Files:
+        Path:
+            S3 Bucket
+                --> Objects
+                --> Upload
+
+        Upload:
+            - index.html
+            - error.html
+            - script.js
+            - style.css
+
+
+    # Website Endpoint:
+        After enabling static website hosting:
+
+            S3 Bucket
+                --> Properties
+                --> Static website hosting
+
+        A website endpoint URL is provided.
+
+        This URL is used to open the hosted website.
+
+
+    # Access Denied / Forbidden Error:
+        In the practical, opening the website endpoint initially returns:
+
+            --> Forbidden / Access Denied
+
+        Even though:
+            - Block Public Access is disabled.
+            - Static website hosting is enabled.
+            - Website files are uploaded.
+
+
+    # Why Access is Denied:
+        The bucket does not yet have a bucket policy allowing public read access.
+
+        AWS behavior:
+            - If no policy explicitly allows public access,
+              the request is denied by default.
+
+        Important:
+            Disabling Block Public Access alone does NOT automatically
+            make the website files publicly readable.
+
+
+    # What is Missing:
+        The bucket needs a resource-based bucket policy that allows
+        public read access to the website objects.
+
+        Required idea:
+            - Add an Allow action.
+            - Allow public users to read the required S3 objects.
+
+        This policy configuration is covered in the next lesson.
+
+
+    # Practical Workflow:
+        1. Prepare HTML, CSS, and JavaScript files.
+        2. Create a globally unique S3 bucket.
+        3. Disable Block All Public Access.
+        4. Create the bucket.
+        5. Open Properties.
+        6. Enable Static Website Hosting.
+        7. Set index.html as the index document.
+        8. Set error.html as the error document.
+        9. Upload all website files.
+        10. Open the S3 website endpoint.
+        11. Observe the Access Denied / Forbidden error.
+        12. Identify that a bucket policy is still required.
+
+
+    # Quick Summary:
+        1. Static Website Hosting
+            --> Allows S3 to serve website files.
+
+        2. Index Document
+            --> Main website page.
+
+        3. Error Document
+            --> Page shown for website errors.
+
+        4. Block Public Access
+            --> Must be disabled for intentional public website access.
+
+        5. Website Files
+            --> HTML, CSS, and JavaScript are uploaded as S3 objects.
+
+        6. Bucket Policy
+            --> Still required to allow public read access.
+
+        7. Default Behavior
+            --> No explicit Allow means Access Denied.
+
+
+    # Lecture Summary:
+        "This practical shows how to create an S3 bucket for static website hosting,
+        upload HTML, CSS, and JavaScript files, and configure index and error documents.
+        Disabling Block Public Access and enabling website hosting are not enough by
+        themselves; without a bucket policy that explicitly allows public read access,
+        the website endpoint returns Access Denied."
