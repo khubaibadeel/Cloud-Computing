@@ -1,2 +1,456 @@
 
 
+# EFS Console Lab:
+    This practical lesson demonstrates how to create an Amazon EFS file system,
+    configure mount targets and NFS access, mount EFS on Amazon Linux EC2 instances
+    in different Availability Zones, test shared file access, unmount and remount
+    the file system, and clean up the resources.
+
+
+    # Step 1: Open Amazon EFS:
+        Path:
+            AWS Console
+                --> Search
+                --> EFS
+                --> Elastic File System
+
+        If no file system exists:
+            --> Create file system
+
+        For this lab:
+            - Use the customized creation flow so all settings are visible.
+
+
+    # Step 2: Configure the EFS File System:
+        Enter a meaningful name for the EFS file system.
+
+        File system type:
+            Regional
+                - Used for high availability.
+                - Supports access from multiple Availability Zones.
+
+            One Zone
+                - Stores EFS in a single Availability Zone.
+
+        In this lab:
+            --> Select Regional
+
+
+    # Step 3: Review Backup and Lifecycle Settings:
+        Automatic Backup:
+            - AWS can automatically back up the EFS file system.
+
+        Lifecycle Management:
+            - Files can move from Standard to Infrequent Access.
+            - Files can also transition to Archive.
+
+        Example transition periods:
+            - 30 days
+            - 60 days
+            - 90 days
+            - Other available periods
+
+        Transition back to Standard:
+            - "On first access" can move a file back to Standard
+              when an archived or IA file is accessed again.
+
+
+    # Step 4: Encryption and Throughput:
+        Encryption at Rest:
+            --> Enabled by default.
+
+        Throughput modes shown:
+            - Elastic
+            - Provisioned
+            - Bursting
+
+        For this lab:
+            --> Keep the main settings at their defaults.
+
+
+    # Step 5: Configure Network Access:
+        Continue to Network Access.
+
+        VPC:
+            --> Default VPC is used.
+
+        Because Regional EFS is selected:
+            - AWS creates mount targets in multiple Availability Zones.
+            - Each mount target is associated with a subnet.
+            - A security group is attached to the mount targets.
+
+        Important:
+            - EFS needs an inbound NFS rule in its security group.
+
+
+    # Step 6: Review EFS File System Policies:
+        EFS supports resource-based file system policies.
+
+        Examples shown:
+            - Prevent root access by default.
+            - Enforce read-only access by default.
+            - Prevent anonymous access.
+            - Enforce encryption for all clients.
+
+        For this lab:
+            --> Keep the policy configuration simple and continue.
+
+
+    # Step 7: Create the EFS File System:
+        Review the configuration.
+
+        Then:
+            --> Create
+
+        Wait until:
+            - The file system becomes available.
+            - Mount targets finish creating.
+
+
+    # Step 8: Launch the First EC2 Instance:
+        Open EC2.
+
+        Path:
+            EC2
+                --> Launch instance
+
+        Configure:
+            - Amazon Linux.
+            - Default AMI and instance type.
+            - Select a key pair.
+            - Use the same VPC as EFS.
+
+        Place the first instance in:
+            --> Availability Zone 1
+
+        Example:
+            eu-north-1a or the selected first AZ.
+
+
+    # Step 9: Launch the Second EC2 Instance:
+        Launch another Amazon Linux instance.
+
+        Place it in:
+            --> Availability Zone 2
+
+        Select the subnet belonging to that AZ.
+
+        During launch:
+            - Add a shared file system.
+            - Select the EFS file system created earlier.
+            - Choose the mount point.
+
+        Result:
+            - EFS is mounted automatically on the second instance.
+
+
+    # Step 10: Verify EFS on the Auto-Mounted Instance:
+        Connect to the EC2 instance.
+
+        Command:
+
+            df -h
+
+        Result:
+            - The EFS file system appears as mounted.
+
+        Move into the EFS mount directory.
+
+        Example:
+
+            cd /mnt/efs/fs1
+
+
+    # Step 11: Create a Shared Test File:
+        Create a file:
+
+            touch t.txt
+
+        Edit it:
+
+            nano t.txt
+
+        Save:
+            Ctrl + X
+            Y
+            Enter
+
+        Verify:
+
+            cat t.txt
+
+        Result:
+            - The test file is stored on EFS.
+
+
+    # Step 12: Prepare the Other EC2 Instance for Manual Mount:
+        Connect to the other EC2 instance.
+
+        Create a mount directory:
+
+            sudo mkdir /efs
+
+        Verify:
+
+            ls /
+
+
+    # Step 13: Install EFS Utilities:
+        Before using the EFS mount helper, install:
+
+            sudo yum install -y amazon-efs-utils
+
+        This installs the Amazon EFS utilities required for:
+
+            mount -t efs
+
+
+    # Step 14: Get the Mount Command:
+        Open the EFS file system in the AWS Console.
+
+        Select:
+            --> Attach
+
+        Copy the Linux mount command.
+
+        The command includes:
+
+            mount -t efs
+                -t efs
+                    --> File system type is EFS.
+
+                -o tls
+                    --> Uses TLS to encrypt traffic.
+
+                File System ID
+                    --> Identifies the EFS file system.
+
+                Mount Directory
+                    --> Example: /efs
+
+
+    # Step 15: Configure the EFS Security Group:
+        If the mount times out, check the EFS security group.
+
+        EFS requires NFS access on:
+
+            TCP Port:
+                2049
+
+        Path:
+            VPC
+                --> Security Groups
+                --> Select the EFS security group
+                --> Edit inbound rules
+
+        Add:
+            Type / Port:
+                NFS / TCP 2049
+
+        Source:
+            - EC2 security group
+            OR
+            - Required subnet / allowed source
+
+        Save the rule.
+
+
+    # Step 16: Mount EFS Manually:
+        Run the copied mount command again.
+
+        Example structure:
+
+            sudo mount -t efs -o tls FILE-SYSTEM-ID:/ /efs
+
+        If no error appears:
+            --> EFS is mounted successfully.
+
+        Verify:
+
+            df -h
+
+
+    # Step 17: Understand the Large Displayed Size:
+        Linux may display EFS as a very large file system.
+
+        Example shown:
+            About 8 exabytes
+
+        Important:
+            - This does not mean AWS permanently allocated 8 EB to you.
+            - EFS is elastic and automatically grows and shrinks with usage.
+
+
+    # Step 18: Test Shared File Access Across AZs:
+        On the manually mounted instance:
+
+            ls /efs
+
+        The file created on the other EC2 instance should appear.
+
+        Read it:
+
+            cat /efs/t.txt
+
+        Result:
+            - Both EC2 instances see the same file.
+            - The instances can be in different Availability Zones.
+
+        Shared operations can include:
+            - Read
+            - Copy
+            - Move
+            - Rename
+            - Edit
+
+
+    # Step 19: Unmount EFS:
+        To unmount:
+
+            sudo umount /efs
+
+        Verify:
+
+            df -h
+
+        Result:
+            - /efs no longer appears as mounted.
+
+        Important:
+            - Unmounting does not delete EFS data.
+
+
+    # Step 20: Remount EFS:
+        Run the same mount command again:
+
+            sudo mount -t efs -o tls FILE-SYSTEM-ID:/ /efs
+
+        Result:
+            - The same files become available again.
+
+        This confirms:
+            --> Data is stored in EFS, not in the local EC2 mount directory.
+
+
+    # Step 21: Making the Mount Persistent:
+        To keep EFS mounted after an EC2 reboot, add the file system
+        to /etc/fstab.
+
+        Example structure:
+
+            FILE-SYSTEM-ID:/ /efs efs _netdev,tls 0 0
+
+        Then test:
+
+            sudo mount -a
+
+        Verify:
+
+            df -h
+
+        Important:
+            - The EFS utilities must be installed.
+            - NFS port 2049 must be allowed.
+            - The mount target for the instance's AZ must be available.
+
+
+    # Step 22: Clean Up the Lab:
+        After testing:
+
+            1. Unmount EFS.
+            2. Terminate the EC2 instances.
+            3. Open the EFS console.
+            4. Delete the EFS file system.
+
+        During EFS deletion:
+            - Mount targets are deleted.
+            - Then the EFS file system is removed.
+
+        Important:
+            - Clean up lab resources to avoid unnecessary charges.
+
+
+    # Important Commands Used:
+        Check mounted file systems:
+
+            df -h
+
+        Create mount directory:
+
+            sudo mkdir /efs
+
+        Install EFS utilities:
+
+            sudo yum install -y amazon-efs-utils
+
+        Mount EFS:
+
+            sudo mount -t efs -o tls FILE-SYSTEM-ID:/ /efs
+
+        List files:
+
+            ls /efs
+
+        Read file:
+
+            cat /efs/t.txt
+
+        Unmount:
+
+            sudo umount /efs
+
+        Test persistent mounts:
+
+            sudo mount -a
+
+
+    # Practical Workflow:
+        1. Open EFS and create a Regional file system.
+        2. Keep backup, encryption, and throughput settings as required.
+        3. Create mount targets in multiple Availability Zones.
+        4. Review the EFS security group.
+        5. Launch two Amazon Linux EC2 instances in different AZs.
+        6. Auto-mount EFS on one instance.
+        7. Create a test file on EFS.
+        8. Install amazon-efs-utils on the second instance.
+        9. Create /efs.
+        10. Allow TCP 2049 in the EFS security group.
+        11. Mount EFS manually with TLS.
+        12. Verify the same file is visible from both EC2 instances.
+        13. Unmount and remount EFS.
+        14. Add an /etc/fstab entry for persistent mounting.
+        15. Terminate EC2 instances and delete EFS after the lab.
+
+
+    # Quick Summary:
+        1. Regional EFS
+            --> Supports multi-AZ access.
+
+        2. Mount Target
+            --> NFS endpoint used by EC2 to reach EFS.
+
+        3. TCP 2049
+            --> Required for NFS access.
+
+        4. amazon-efs-utils
+            --> Provides the EFS mount helper.
+
+        5. -o tls
+            --> Encrypts EFS client traffic.
+
+        6. Shared Access
+            --> Multiple EC2 instances can access the same files.
+
+        7. Elastic Storage
+            --> EFS grows and shrinks automatically.
+
+        8. Persistent Mount
+            --> Configure /etc/fstab so EFS mounts again after reboot.
+
+
+    # Lecture Summary:
+        "This practical shows how to create a Regional Amazon EFS file system,
+        configure mount targets and NFS access, connect EC2 instances from different
+        Availability Zones, and verify that both instances can share the same files.
+        EFS can be mounted manually with amazon-efs-utils and TLS, and an /etc/fstab
+        entry can make the mount persistent across reboots."
