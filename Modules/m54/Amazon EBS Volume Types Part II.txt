@@ -1,2 +1,210 @@
 
 
+# Amazon EBS Volume Types Part II:
+    This topic explains HDD-based EBS volumes, EBS snapshots, consistency,
+    portability, and encryption.
+
+
+    # HDD Volume Types:
+        HDD volumes are designed for sequential I/O.
+
+        Best for:
+            - Large continuous data streams.
+            - Throughput-heavy workloads.
+
+        Performance is measured mainly in:
+            --> Throughput (MB/s), not IOPS.
+
+        Important:
+            - HDD volumes can be cheaper than SSD volumes for the right workload.
+            - st1 and sc1 cannot be used as boot volumes.
+
+
+    # st1 - Throughput Optimized HDD:
+        st1 is designed for frequently accessed, large sequential workloads.
+
+        Best for:
+            - Big data.
+            - Streaming workloads.
+            - Log processing.
+
+        Key points:
+            - Maximum throughput: 500 MB/s.
+            - Maximum IOPS: 500.
+            - Volume size range: 125 GB to 16 TB.
+            - Cannot be used as a boot volume.
+
+
+    # sc1 - Cold HDD:
+        sc1 is designed for infrequently accessed data.
+
+        Best for:
+            - Cold data archives.
+            - Infrequently accessed backups.
+            - Rarely read datasets.
+            - Applications that still require block storage.
+
+        Key points:
+            - Maximum throughput: 250 MB/s.
+            - Maximum IOPS: 250.
+            - Volume size range: 125 GB to 16 TB.
+            - Lowest EBS cost per GB among the listed volume types.
+            - Cannot be used as a boot volume.
+
+
+    # Complete EBS Volume Type Comparison:
+        gp2:
+            - Category: SSD
+            - Max IOPS: 16,000
+            - Throughput: 250 MB/s
+            - Use case: General purpose, previous generation
+            - Boot: Yes
+
+        gp3:
+            - Category: SSD
+            - Max IOPS: 16,000
+            - Throughput: 1,000 MB/s
+            - Use case: General purpose, current default
+            - Boot: Yes
+
+        io1:
+            - Category: SSD
+            - Max IOPS: 64,000
+            - Throughput: 1,000 MB/s
+            - Use case: High-IOPS database, previous generation
+            - Boot: Yes
+
+        io2 Block Express:
+            - Category: SSD
+            - Max IOPS: 256,000
+            - Throughput: 4,000 MB/s
+            - Use case: Mission-critical databases
+            - Boot: Yes
+
+        st1:
+            - Category: HDD
+            - Max IOPS: 500
+            - Throughput: 500 MB/s
+            - Use case: Big data and streaming
+            - Boot: No
+
+        sc1:
+            - Category: HDD
+            - Max IOPS: 250
+            - Throughput: 250 MB/s
+            - Use case: Cold archive block storage
+            - Boot: No
+
+
+    # EBS Snapshots:
+        EBS snapshots are point-in-time backups of EBS volumes.
+
+        Snapshot flow:
+            EBS Volume
+                --> Snapshot
+                --> Managed S3
+                --> Restore
+
+        Key behavior:
+            - First snapshot stores the full used data.
+            - Later snapshots are incremental.
+            - Incremental snapshots store only changed blocks.
+            - Any snapshot can restore the full volume.
+
+
+    # Snapshot Portability:
+        Cross-AZ:
+            - Create a new volume from a snapshot in another Availability Zone
+              within the same Region.
+
+        Cross-Region:
+            - Copy the snapshot to another Region.
+            - Create a new EBS volume from the copied snapshot.
+
+
+    # Snapshot Consistency:
+        Best option:
+            --> Stop the instance before taking the snapshot.
+
+        Running instance:
+            - Snapshot is crash-consistent.
+
+        Database workloads:
+            - Use database tools such as:
+                - mysqldump
+                - pg_dump
+
+        Note:
+            - Crash-consistent snapshots are acceptable for many file systems.
+
+
+    # EBS Snapshot Recycle Bin:
+        Recycle Bin helps recover accidentally deleted snapshots.
+
+        Key points:
+            - Deleted snapshots can be retained temporarily.
+            - Retention can be configured for up to 1 year.
+            - Useful as a safety net in production accounts.
+
+        Production approach shown:
+            --> DLM + Recycle Bin
+
+
+    # EBS Encryption:
+        EBS encryption protects:
+
+            - Data at rest.
+            - Data in transit between instance and volume.
+            - Snapshots.
+            - Restored volumes.
+
+        Key options:
+
+            AWS-managed key:
+                --> aws/ebs
+
+            Customer-managed KMS key:
+                - Better for auditing.
+                - Supports rotation and policy control.
+
+
+    # Enable Encryption by Default:
+        Path:
+            EC2 Console
+                --> Settings
+                --> Data protection
+                --> Enable EBS encryption by default
+
+
+    # Quick Summary:
+        1. st1
+            --> Throughput Optimized HDD for large sequential workloads.
+
+        2. sc1
+            --> Lowest-cost HDD for cold and infrequently accessed data.
+
+        3. HDD Performance
+            --> Measured mainly in throughput.
+
+        4. Snapshots
+            --> Point-in-time backups stored in managed S3.
+
+        5. Incremental Snapshots
+            --> Store only changed blocks after the first snapshot.
+
+        6. Snapshot Portability
+            --> Supports cross-AZ restore and cross-Region copy.
+
+        7. Recycle Bin
+            --> Helps recover deleted snapshots.
+
+        8. EBS Encryption
+            --> Protects volumes, snapshots, restored volumes, and data in transit.
+
+
+    # Lecture Summary:
+        "st1 and sc1 are HDD-based EBS volume types for throughput-heavy and cold
+        storage workloads. EBS snapshots provide incremental point-in-time backups
+        that can be restored across Availability Zones or copied across Regions.
+        Recycle Bin adds recovery protection, while EBS encryption secures volumes
+        and snapshots using AWS-managed or customer-managed KMS keys."
