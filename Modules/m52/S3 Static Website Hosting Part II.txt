@@ -1,2 +1,154 @@
 
 
+# S3 Static Website Hosting Part II:
+    This practical lesson demonstrates how to make an S3 static website publicly
+    readable using a bucket policy and how to test the website through the S3 endpoint.
+
+
+    # Review from Part I:
+        In the previous practical:
+
+            - An S3 bucket was created.
+            - Block Public Access was disabled.
+            - Static website hosting was enabled.
+            - HTML, CSS, and JavaScript files were uploaded.
+
+        Result:
+            --> The website endpoint returned Access Denied.
+
+        Reason:
+            - No bucket policy allowed public read access.
+
+
+    # Opening the Bucket Policy:
+        Path:
+            S3 Bucket
+                --> Permissions
+                --> Bucket policy
+                --> Edit
+
+        A bucket policy is required so S3 knows how to handle requests
+        coming from outside the AWS account.
+
+
+    # Public Read Policy:
+        The policy used in the lesson allows public read access.
+
+        Main settings:
+
+            Sid:
+                PublicReadObject
+
+            Effect:
+                Allow
+
+            Principal:
+                "*"
+
+            Action:
+                s3:GetObject
+
+            Resource:
+                arn:aws:s3:::BUCKET-NAME/*
+
+
+    # Meaning of the Policy:
+        Effect = Allow
+            --> Explicitly allows the action.
+
+        Principal = "*"
+            --> Everyone can access the objects.
+
+        Action = s3:GetObject
+            --> Allows objects to be read/downloaded.
+
+        Resource = bucket-name/*
+            --> Applies to all objects inside the bucket.
+
+
+    # Saving the Bucket Policy:
+        After entering the correct bucket name:
+
+            - Save the policy.
+            - Return to the static website endpoint.
+            - Refresh the page.
+
+        Result:
+            --> The website loads successfully.
+
+
+    # Testing the Website:
+        Once public read access is configured:
+
+            - HTML loads correctly.
+            - CSS styling is applied.
+            - JavaScript functionality works.
+            - The S3 static website endpoint becomes publicly accessible.
+
+
+    # Static Website Use Cases:
+        S3 static website hosting can be used for:
+
+            - Personal portfolio websites.
+            - Simple informational websites.
+            - Public CV or resume pages.
+            - Basic static web content.
+
+
+    # Limitation:
+        S3 static website hosting is for static content.
+
+        It cannot directly host applications that require:
+
+            - A backend application server.
+            - Dynamic server-side processing.
+            - A backend that generates data dynamically.
+
+        Suitable content:
+            - HTML
+            - CSS
+            - JavaScript
+
+
+    # Complete Setup:
+        To host a public static website on S3:
+
+            1. Create the S3 bucket.
+            2. Disable Block Public Access intentionally.
+            3. Enable Static Website Hosting.
+            4. Upload HTML, CSS, and JavaScript files.
+            5. Configure index and error documents.
+            6. Add a bucket policy allowing s3:GetObject.
+            7. Open the S3 website endpoint.
+            8. Test the website and its JavaScript functionality.
+
+
+    # Quick Summary:
+        1. Access Denied
+            --> Occurs when public read permission is missing.
+
+        2. Bucket Policy
+            --> Defines public access for the website objects.
+
+        3. Principal "*"
+            --> Everyone.
+
+        4. s3:GetObject
+            --> Allows reading website files.
+
+        5. Website Endpoint
+            --> Used to open the hosted static website.
+
+        6. Static Website
+            --> Supports HTML, CSS, and JavaScript.
+
+        7. Dynamic Backend
+            --> Cannot be hosted directly using S3 static website hosting.
+
+
+    # Lecture Summary:
+        "To make an S3 static website accessible, the bucket needs a policy that
+        explicitly allows public s3:GetObject access. Once the policy is applied,
+        the S3 website endpoint can serve HTML, CSS, and JavaScript correctly.
+        S3 is suitable for portfolios and other static websites, but not for
+        applications that require server-side backend processing."
